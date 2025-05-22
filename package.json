@@ -7,7 +7,6 @@
     "build": "vite build && tsc",
     "route": "tsr generate",
     "route:watch": "tsr watch",
-    "serve": "vite preview",
     "test": "vitest run"
   },
   "dependencies": {

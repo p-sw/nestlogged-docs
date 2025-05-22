@@ -1,5 +1,6 @@
 {
-  "include": ["**/*.ts", "**/*.tsx", "**/*.jsx"],
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "include": ["scripts/*"],
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",
@@ -8,10 +9,7 @@
     "types": ["vite/client", "node", "unplugin-icons/types/react"],
 
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
-    "noEmit": true,
-    "allowJs": true,
 
     "skipLibCheck": true,
     "strict": true,
@@ -20,8 +18,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+
+    "outDir": "scripts/dist"
   }
 }

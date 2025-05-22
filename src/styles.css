@@ -114,6 +114,10 @@
     * {
         @apply border-border outline-ring/50;
     }
+    html,
+    body {
+        @apply min-h-screen h-auto w-full max-w-screen;
+    }
     body {
         font-family:
             "Wanted Sans Variable",

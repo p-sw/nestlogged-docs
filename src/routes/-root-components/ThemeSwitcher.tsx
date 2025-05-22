@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoonStar, Sun } from "lucide-react";
 
-import { useCallback, useDebugValue, useEffect, useState } from "react";
+import { useDebugValue, useEffect, useState } from "react";
 
 type ThemeSystem = "system";
 type Theme = ThemeSystem | "dark" | "light";
@@ -24,10 +24,7 @@ export default function ThemeSwitcher() {
    */
   function getRealValue(): ThemeReals {
     const $ = theme ?? "system";
-    if ($ == "system")
-      return window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
+    if ($ == "system") return getSystemRealValue();
     else return $;
   }
   const [real, setReal] = useState<ThemeReals>(getRealValue);
@@ -50,9 +47,9 @@ export default function ThemeSwitcher() {
     matchMedia.addEventListener("change", colorSchemeChangeListener);
 
     return () => {
-      matchMedia.removeListener(colorSchemeChangeListener);
+      matchMedia.removeEventListener("change", colorSchemeChangeListener);
     };
-  }, []);
+  }, [theme]);
 
   return (
     <DropdownMenu>

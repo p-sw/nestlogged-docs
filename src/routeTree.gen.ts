@@ -11,14 +11,34 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as MainImport } from './routes/_main'
 import { Route as IndexImport } from './routes/index'
+import { Route as MainKoIndexImport } from './routes/_main/ko/index'
+import { Route as MainEnIndexImport } from './routes/_main/en/index'
 
 // Create/Update Routes
+
+const MainRoute = MainImport.update({
+  id: '/_main',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const MainKoIndexRoute = MainKoIndexImport.update({
+  id: '/ko/',
+  path: '/ko/',
+  getParentRoute: () => MainRoute,
+} as any)
+
+const MainEnIndexRoute = MainEnIndexImport.update({
+  id: '/en/',
+  path: '/en/',
+  getParentRoute: () => MainRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -32,39 +52,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/_main': {
+      id: '/_main'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof MainImport
+      parentRoute: typeof rootRoute
+    }
+    '/_main/en/': {
+      id: '/_main/en/'
+      path: '/en'
+      fullPath: '/en'
+      preLoaderRoute: typeof MainEnIndexImport
+      parentRoute: typeof MainImport
+    }
+    '/_main/ko/': {
+      id: '/_main/ko/'
+      path: '/ko'
+      fullPath: '/ko'
+      preLoaderRoute: typeof MainKoIndexImport
+      parentRoute: typeof MainImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface MainRouteChildren {
+  MainEnIndexRoute: typeof MainEnIndexRoute
+  MainKoIndexRoute: typeof MainKoIndexRoute
+}
+
+const MainRouteChildren: MainRouteChildren = {
+  MainEnIndexRoute: MainEnIndexRoute,
+  MainKoIndexRoute: MainKoIndexRoute,
+}
+
+const MainRouteWithChildren = MainRoute._addFileChildren(MainRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '': typeof MainRouteWithChildren
+  '/en': typeof MainEnIndexRoute
+  '/ko': typeof MainKoIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '': typeof MainRouteWithChildren
+  '/en': typeof MainEnIndexRoute
+  '/ko': typeof MainKoIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/_main': typeof MainRouteWithChildren
+  '/_main/en/': typeof MainEnIndexRoute
+  '/_main/ko/': typeof MainKoIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '' | '/en' | '/ko'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '' | '/en' | '/ko'
+  id: '__root__' | '/' | '/_main' | '/_main/en/' | '/_main/ko/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MainRoute: typeof MainRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MainRoute: MainRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +141,27 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/_main"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/_main": {
+      "filePath": "_main.tsx",
+      "children": [
+        "/_main/en/",
+        "/_main/ko/"
+      ]
+    },
+    "/_main/en/": {
+      "filePath": "_main/en/index.tsx",
+      "parent": "/_main"
+    },
+    "/_main/ko/": {
+      "filePath": "_main/ko/index.tsx",
+      "parent": "/_main"
     }
   }
 }

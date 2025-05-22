@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import MdiGithub from "~icons/mdi/github";
 import ThemeSwitcher from "./ThemeSwitcher";
+import LanguageSelector from "./LanguageSelector";
 
 function Links() {
   return (
@@ -22,6 +23,7 @@ function Icons() {
         </a>
       </Button>
       <ThemeSwitcher />
+      <LanguageSelector />
     </div>
   );
 }

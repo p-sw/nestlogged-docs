@@ -192,8 +192,12 @@
         @apply border-border outline-ring/50;
     }
     html,
-    body {
+    body,
+    #app {
         @apply min-h-screen h-auto w-full max-w-screen;
+    }
+    #app {
+        @apply flex flex-col;
     }
     body {
         font-family:

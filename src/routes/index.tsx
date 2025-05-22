@@ -1,36 +1,16 @@
-import { createFileRoute } from '@tanstack/react-router'
-import logo from '../logo.svg'
-import '../App.css'
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 
-export const Route = createFileRoute('/')({
-  component: App,
-})
+export const Route = createFileRoute("/")({
+  component: RouteComponent,
+});
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/routes/index.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <a
-          className="App-link"
-          href="https://tanstack.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn TanStack
-        </a>
-      </header>
-    </div>
-  )
+function RouteComponent() {
+  const navigate = useNavigate({ from: "/" });
+
+  useEffect(() => {
+    navigate({ to: "/en" });
+  });
+
+  return null;
 }

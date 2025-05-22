@@ -6,6 +6,8 @@
     "dev": "vite --port 3000",
     "start": "vite --port 3000",
     "build": "vite build && tsc",
+    "route": "tsr generate",
+    "route:watch": "tsr watch",
     "serve": "vite preview",
     "test": "vitest run"
   },
@@ -19,6 +21,7 @@
     "tailwindcss": "^4.1.7"
   },
   "devDependencies": {
+    "@tanstack/router-cli": "^1.120.5",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",
     "@types/react": "^19.0.8",

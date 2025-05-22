@@ -6,7 +6,7 @@ export const Route = createFileRoute("/_main")({
 
 function RouteComponent() {
   return (
-    <main className="w-full grow flex flex-col justify-center items-center">
+    <main className="w-full grow flex flex-col justify-center items-center gap-8">
       <Outlet />
     </main>
   );

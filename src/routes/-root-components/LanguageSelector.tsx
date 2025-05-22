@@ -9,9 +9,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Link } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
+
+function gotolang(lang: "en" | "ko"): string {
+  return window.location.pathname.replace(/\/(en|ko)(\/.*)/, `/${lang}$2`);
+}
 
 export default function LanguageSelector() {
+  const navigate = useNavigate();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -22,11 +28,11 @@ export default function LanguageSelector() {
       <DropdownMenuContent>
         <DropdownMenuLabel>Languages</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Link to="/en">English</Link>
+        <DropdownMenuItem onClick={() => navigate({ to: gotolang("en") })}>
+          English
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link to="/ko">한국어</Link>
+        <DropdownMenuItem onClick={() => navigate({ to: gotolang("ko") })}>
+          한국어
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

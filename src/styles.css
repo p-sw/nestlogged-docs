@@ -195,7 +195,7 @@
     html,
     body,
     #app {
-        @apply min-h-screen h-auto w-full max-w-screen;
+        @apply min-h-screen h-auto;
     }
     #app {
         @apply flex flex-col;

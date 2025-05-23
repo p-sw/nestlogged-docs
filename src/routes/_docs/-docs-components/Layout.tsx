@@ -4,6 +4,7 @@ import type { Toc } from "@stefanprobst/rehype-extract-toc";
 import { createContext, use, type ReactNode } from "react";
 import type { MDXProps } from "mdx/types";
 import { A } from "./MDXOverrider";
+import VersionSelector from "./VersionSelector";
 
 interface LayoutContextContent {
   lang: Lang;
@@ -28,7 +29,8 @@ export function VersionLayout({ lang, version, navmap }: VersionLayoutProps) {
   return (
     <div className="flex flex-row w-full">
       <aside className="w-64 sticky top-12 h-[calc(100vh-var(--spacing)*12)] p-4 border-r border-border overflow-y-auto flex-none">
-        <h2 className="text-xl font-semibold mb-4">
+        <VersionSelector />
+        <h2 className="text-xl font-semibold mb-2">
           {translations["pages"][lang]}
         </h2>
         <ul>

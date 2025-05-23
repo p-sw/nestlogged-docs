@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "@tanstack/react-router";
 
-type Lang = "en" | "ko";
+export type Lang = "en" | "ko";
 const LANG_REGEX = /\/(en|ko)(\/?.*)/;
 
 function gotolang(lang: Lang): string {

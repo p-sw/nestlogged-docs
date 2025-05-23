@@ -1,8 +1,18 @@
 import type { Lang } from "@/routes/-root-components/LanguageSelector";
 import { Link, Outlet } from "@tanstack/react-router";
 import type { Toc } from "@stefanprobst/rehype-extract-toc";
-import type { ReactNode } from "react";
+import { createContext, use, type ReactNode } from "react";
 import type { MDXProps } from "mdx/types";
+import { A } from "./MDXOverrider";
+
+interface LayoutContextContent {
+  lang: Lang;
+  version: "3_5";
+}
+const LayoutContext = createContext<LayoutContextContent>({
+  lang: "en",
+  version: "3_5",
+});
 
 const translations: Record<string, Record<Lang, string>> = {
   pages: {
@@ -11,10 +21,8 @@ const translations: Record<string, Record<Lang, string>> = {
   },
 };
 
-interface VersionLayoutProps {
-  lang: Lang;
+interface VersionLayoutProps extends LayoutContextContent {
   navmap: Record<string, string>;
-  version: "3_5";
 }
 export function VersionLayout({ lang, version, navmap }: VersionLayoutProps) {
   return (
@@ -33,7 +41,9 @@ export function VersionLayout({ lang, version, navmap }: VersionLayoutProps) {
           ))}
         </ul>
       </aside>
-      <Outlet />
+      <LayoutContext value={{ lang, version }}>
+        <Outlet />
+      </LayoutContext>
     </div>
   );
 }
@@ -45,12 +55,13 @@ export function DocLayout({
   toc: Toc;
   mdx: (props: MDXProps) => ReactNode;
 }) {
+  const ctx = use(LayoutContext);
+
   return (
     <>
       <main className="min-w-0 max-w-none w-full prose prose-slate dark:prose-invert p-8">
-        <MDX />
+        <MDX components={{ a: A(`/${ctx.lang}/docs/${ctx.version}`) }} />
       </main>
-
       <aside className="sticky w-fit min-w-48 top-12 h-[calc(100vh-var(--spacing)*12)] p-4 border-l border-border overflow-y-auto hidden xl:block flex-none">
         <h3 className="text-md font-semibold">On this page</h3>
         {toc && toc.length > 0 ? (

@@ -11,8 +11,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "@tanstack/react-router";
 
-function gotolang(lang: "en" | "ko"): string {
-  return window.location.pathname.replace(/\/(en|ko)(\/?.*)/, `/${lang}$2`);
+type Lang = "en" | "ko";
+const LANG_REGEX = /\/(en|ko)(\/?.*)/;
+
+function gotolang(lang: Lang): string {
+  return window.location.pathname.replace(LANG_REGEX, `/${lang}$2`);
+}
+
+export function getLanguage(): Lang {
+  return (LANG_REGEX.exec(window.location.pathname) ?? ["/", "en"])[1] as Lang;
 }
 
 export default function LanguageSelector() {

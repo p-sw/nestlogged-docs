@@ -11,7 +11,9 @@ function RouteComponent() {
       <h1 className="font-bold text-2xl">A NestJS Logger Decorator Library</h1>
       <div className="flex flex-row justify-center items-center gap-2">
         <Button asChild variant="default">
-          <Link from="/en">Documentation</Link>
+          <Link from="/en" to="docs">
+            Documentation
+          </Link>
         </Button>
         <Button asChild variant="secondary">
           <a href="https://github.com/p-sw/nestlogged">Github</a>

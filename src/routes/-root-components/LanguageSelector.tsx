@@ -12,7 +12,7 @@ import {
 import { useNavigate } from "@tanstack/react-router";
 
 function gotolang(lang: "en" | "ko"): string {
-  return window.location.pathname.replace(/\/(en|ko)(\/.*)/, `/${lang}$2`);
+  return window.location.pathname.replace(/\/(en|ko)(\/?.*)/, `/${lang}$2`);
 }
 
 export default function LanguageSelector() {

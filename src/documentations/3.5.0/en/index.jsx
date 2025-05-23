@@ -1,5 +1,6 @@
 /*@jsxRuntime automatic*/
 /*@jsxImportSource react*/
+export const tableOfContents = [];
 function _createMdxContent(props) {
   return <></>;
 }

@@ -395,4 +395,12 @@
         }
         font-style: normal;
     }
+
+    .prose :where(code):not(:where(pre code)) {
+        &::after,
+        &::before {
+            content: "";
+        }
+        @apply bg-black/5 dark:bg-white/20 rounded-sm px-1 mx-0.5 py-0.5 text-[0.9em];
+    }
 }

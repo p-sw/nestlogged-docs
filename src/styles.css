@@ -236,7 +236,7 @@
 
         .remark-code-meta-block {
             display: flex;
-            flex-direction: row-reverse;
+            flex-direction: row;
             justify-content: space-between;
             align-items: center;
             padding-inline-start: var(--tw-prose-pre-padding-inline);
@@ -247,8 +247,7 @@
 
         .remark-code-meta__filename,
         .remark-code-meta__lang {
-            background-color: var(--background);
-            color: var(--foreground);
+            @apply bg-white/20;
             border-radius: var(--tw-prose-border-radius);
 
             padding-top: calc(var(--tw-prose-pre-padding-y) / 8);

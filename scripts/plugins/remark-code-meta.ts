@@ -71,7 +71,15 @@ export default function remarkCodeMeta(): RemarkPlugin {
         },
         children: [],
       };
-      replacedNode.children!.push(metaBlock, parent.children[index]);
+      const originalCodeblock = parent.children[index];
+      replacedNode.children!.push(metaBlock, originalCodeblock);
+      originalCodeblock.data = {
+        ...(originalCodeblock.data ?? {}),
+        hData: {
+          ...((originalCodeblock.data as { hData?: any })?.hData ?? {}),
+          ...params,
+        },
+      };
       if ("file" in params || "title" in params) {
         metaBlock.children!.push({
           type: "paragraph",

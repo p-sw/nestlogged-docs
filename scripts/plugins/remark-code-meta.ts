@@ -75,9 +75,10 @@ export default function remarkCodeMeta(): RemarkPlugin {
       replacedNode.children!.push(metaBlock, originalCodeblock);
       originalCodeblock.data = {
         ...(originalCodeblock.data ?? {}),
-        hData: {
-          ...((originalCodeblock.data as { hData?: any })?.hData ?? {}),
-          ...params,
+        hProperties: {
+          ...((originalCodeblock.data as { hProperties?: any })?.hProperties ??
+            {}),
+          ICodeMetaParams: params,
         },
       };
       if ("file" in params || "title" in params) {

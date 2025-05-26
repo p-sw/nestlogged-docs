@@ -20,6 +20,13 @@ export default function rehypeHighlight() {
         return;
       }
 
+      const ICodeMetaParams = node.properties
+        .ICodeMetaParams! as unknown as Record<string, string>;
+      node.properties = Object.fromEntries(
+        Object.entries(node.properties).filter(
+          ([k]) => k !== "ICodeMetaParams",
+        ),
+      );
       const lang = language(node);
 
       if (!lang) {

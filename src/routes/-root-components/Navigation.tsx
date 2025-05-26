@@ -30,11 +30,9 @@ function Icons() {
 
 export default function Navigation() {
   return (
-    <nav className="w-screen max-w-full sticky top-0 z-20 bg-background backdrop-blur-lg border-b border-border h-12 px-4 p-2">
-      <div className="mx-auto w-full h-full max-w-4xl flex flex-row justify-between items-center gap-4">
-        <Links />
-        <Icons />
-      </div>
+    <nav className="w-screen max-w-full sticky top-0 z-20 bg-background backdrop-blur-lg border-b border-border h-12 px-4 p-2 flex flex-row justify-between items-center gap-4">
+      <Links />
+      <Icons />
     </nav>
   );
 }

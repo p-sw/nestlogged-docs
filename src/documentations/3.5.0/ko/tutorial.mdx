@@ -1,6 +1,7 @@
 이 문서에서는 NestLogged에 대해 아무것도 모른다는 전제 하에 처음부터 끝까지 NestLogged의 모든 **기능 사용법**을 설명합니다.
 
 NestLogged를 처음 접하는 분에게 추천합니다.
+
 # NestLogged에 대하여
 
 NestLogged는 NestJS를 위한 간단한 데코레이터를 제공하며, 여러 복잡한 로깅을 간단하게 적용할 수 있도록 도와줍니다.
@@ -35,34 +36,47 @@ LOG [AppController] ID=[nPcz74xbRvm2IB0rTR6B2g/0000000001] | AppController.getHe
 ---
 # NestLogged 로거 적용
 
-NestLogged에서는 내부에서 처리되는 로그 객체에 Request ID와 Scope를 추가합니다.
+NestLogged에서는 NestJS의 기본 ConsoleLogger를 확장한 새로운 ConsoleLogger를 제공합니다.
 
-그러나 NestJS에서 기본으로 적용되어 있는 ConsoleLogger는 추가된 Request ID와 Scope를 제대로 포맷하지 않고 출력하기 때문에 새로운 ConsoleLogger의 적용이 필요합니다.
+새로운 ConsoleLogger는 NestLogged의 핵심 기능을 포함하고 있고, 이 ConsoleLogger가 없다면 일부 기능을 사용할 때 출력이 제대로 이뤄지지 않을 수 있습니다.
+따라서 이 ConsoleLogger를 사용하실 것을 **권장**합니다.
 
-따라서 NestLogged에서는 NestJS의 커스텀 로거를 적용하는 방식을 따라 새로운 ConsoleLogger를 만들었습니다.
+만약 ConsoleLogger를 사용하지 않고 nestjs의 기본값을 사용하실 경우 오류는 나지 않습니다만, 출력이 이상하게 꼬이거나 예상치 못한 출력이 있을 수도 있습니다.
 
-적용하는 방식은 다음과 같습니다.
+자세한 내용은 [로그 주입과 범위 로깅](#로그 주입과 범위 로깅) 섹션에서 설명합니다.
 
-```ts file:main.ts hl:3,7
+NestLogged의 ConsoleLogger를 적용하는 방법은 다음과 같습니다.
+
+```ts file:main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ConsoleLogger } from 'nestlogged';
+import { ConsoleLogger } from 'nestlogged'; // NestLogged의 ConsoleLogger를 가져옵니다
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: new ConsoleLogger(),
+    logger: new ConsoleLogger(), // ConsoleLogger를 NestJS에 적용합니다
   });
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
 ```
 
-이 ConsoleLogger는 NestJS의 방식을 그대로 가져와 추가된 Request ID와 Scope에 대한 처리 코드만 추가한 클래스입니다.
-
 이 문서의 아래에서는 pino와 같은 서드파티 로깅 패키지를 NestLogged 패키지와 함께 쓰는 방법도 설명합니다.
 
 > [!info] NestJS에서 로거를 확장하는 방법에 대해 더 자세히 알아보려면 다음 링크를 확인해보세요.  
 > [Documentation | NestJS - A progressive Node.js framework](https://docs.nestjs.com/techniques/logger#extend-built-in-logger)
+
+---
+
+# @nestjs/platform-fastify와 사용하기
+
+위와 같은 이유로, fastify를 nestjs와 함께 사용할 경우 nestlogged의 일부 기능에서 오류가 발생할 수 있습니다.
+
+따라서, 오류를 피하기 위해 **반드시** `nestlogged-fastify` 패키지를 사용해야 합니다.
+
+`nestlogged`와 `nestlogged-fastify`는 크게 다르지 않고, 단순히 import 시 패키지명을 바꿔주는 것 만으로 충분합니다.
+
+내부 로직이 다를 뿐 타입은 완벽히 일치합니다.
 
 ---
 # 메서드에 로그 붙이기
@@ -74,7 +88,7 @@ NestLogged에서 가장 기초이자 기반은 메서드에 호출 / 종료 / �
 - `@LoggedFunction()` - Service 등 일반적인 메서드에 사용됩니다.
 - `@LoggedRoute()` - Controller의 메서드에 사용됩니다. `@LoggedFunction()` 에 더해 추가로 엔드포인트의 path와 method를 수집합니다.
 
-```ts file:app.controller.ts hl:9
+```ts file:app.controller.ts
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { LoggedRoute } from 'nestlogged';
@@ -83,7 +97,7 @@ import { LoggedRoute } from 'nestlogged';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @LoggedRoute()
+  @LoggedRoute() // 이 엔드포인트의 호출과 종료가 로그됩니다.
   @Get()
   getHello(): string {
     return this.appService.getHello();
@@ -91,13 +105,13 @@ export class AppController {
 }
 ```
 
-```ts file:app.service.ts hl:6
+```ts file:app.service.ts
 import { Injectable } from '@nestjs/common';
 import { LoggedFunction } from 'nestlogged';
 
 @Injectable()
 export class AppService {
-  @LoggedFunction()
+  @LoggedFunction() // 이 함수의 호출과 종료가 로그됩니다.
   getHello(): string {
     return 'Hello!';
   }
@@ -111,12 +125,13 @@ LOG [AppService] RETURNED FUNCTION AppService.getHello
 LOG [AppController] RETURNED ENDPOINT AppController.getHello (AppController::/[GET])
 ```
 
-> [!warning] `@LoggedRoute()`를 사용할 때는 데코레이터의 순서에 주의해야 합니다.
+> [!warning] `@LoggedRoute()`를 사용할 때는 데코레이터의 순서에 주의해야 합니다.  
 > 항상 `@LoggedRoute()`가 `@Get()`, `@Post()` 등의 데코레이터보다 **먼저 오도록 배치**하세요.
 >
 > `@Get()`과 `@Post()`와 같은 HTTP 메서드 데코레이터는 적용되는 메서드에 path와 method를 메타데이터로 추가합니다. `@LoggedRoute()`는 이 메타데이터를 읽어오는 작업을 수행하는데, HTTP 메서드 데코레이터보다 먼저 수행될 경우 읽어올 메타데이터가 없어 undefined로 표시됩니다.
 >
 > 순서가 헷갈린다면, 데코레이터가 `LoggedRoute(Get(getHello))`와 같이 작동한다는 것을 기억하세요.
+
 ## 데코레이터 옵션
 
 `@LoggedRoute()`와 `@LoggedFunction()`을 설정하기 위해서 옵션을 줄 수 있습니다.
@@ -138,6 +153,7 @@ export const defaultOverrideBuildOptions: OverrideBuildOptions = {
   errorLogLevel: 'error',
 };
 ```
+
 ## 전체 메서드 일괄 로깅
 
 클래스 내의 모든 메서드에 일일히 데코레이터를 붙이는 것은 매우 번거로운 일이 될 것이 분명하므로, 그러한 형태를 피하기 위해 클래스에 적용했을 때 클래스 내의 모든 메서드에 `@LoggedRoute()` 또는 `@LoggedFunction()`을 적용하는 클래스 데코레이터를 제공합니다.
@@ -145,12 +161,13 @@ export const defaultOverrideBuildOptions: OverrideBuildOptions = {
 - `@LoggedController()` - 클래스에 NestJS의 `@Controller()` 데코레이터를 적용시키고, 모든 메서드에 `@LoggedRoute()` 데코레이터를 일괄 적용시킵니다.
 - `@LoggedInjectable()` - 클래스에 NestJS의 `@Injectable()` 데코레이터를 적용시키고, 모든 메서드에 `@LoggedFunction()` 데코레이터를 일괄 적용시킵니다.
 
-```ts file:app.controller.ts hl:5
+```ts file:app.controller.ts
 import { Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { LoggedController } from 'nestlogged';
 
-@LoggedController()
+// 이 컨트롤러의 모든 메서드에 @LoggedRoute()를 적용합니다.
+@LoggedController() // 또한 NestJS의 @Controller를 대체할 수 있습니다.
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
@@ -164,7 +181,8 @@ export class AppController {
 ```ts file:app.service.ts hl:3
 import { LoggedInjectable } from 'nestlogged';
 
-@LoggedInjectable()
+// 이 서비스의 모든 메서드에 @LoggedFunction()을 적용합니다.
+@LoggedInjectable() // 또한 NestJS의 @Injectable()을 대체할 수 있습니다.
 export class AppService {
   getHello(): string {
     return 'Hello!';
@@ -181,16 +199,17 @@ export class AppService {
 
 로그에 포함하기를 원하는 파라미터의 앞에 `@Logged()` 를 붙여 적용시킬 수 있습니다.
 
-```ts file:app.service.ts hlt:@Logged(:) ln:3
+```ts file:app.service.ts
 @LoggedInjectable()
 export class AppService {
+  /* message 파라미터가 로그됩니다. */
   getMessage(@Logged('message') message: string): string {
     return message;
   }
 }
 ```
 
-```log title:"출력 로그" hlt:WITH:!
+```log title:"출력 로그"
 LOG [AppController] HIT ENDPOINT AppController.getHello (AppController::/[GET])
 LOG [AppService] HIT FUNCTION AppService.getMessage WITH message=Hello!
 LOG [AppService] RETURNED FUNCTION AppService.getMessage
@@ -199,16 +218,17 @@ LOG [AppController] RETURNED ENDPOINT AppController.getHello (AppController::/[G
 
 데코레이터의 첫 번째 파라미터는 기록될 파라미터의 이름을 결정합니다.
 
-```ts ln:3 file:app.service.ts hlt:\':\'
+```ts file:app.service.ts
 @LoggedInjectable()
 export class AppService {
+  /* 파라미터 이름은 message지만 otherName으로 기록할 수도 있습니다. */
   getMessage(@Logged('otherName') message: string): string {
     return message;
   }
 }
 ```
 
-```log title:"출력 로그" hlt:other:me
+```log title:"출력 로그"
 LOG [AppController] HIT ENDPOINT AppController.getHello (AppController::/[GET])
 LOG [AppService] HIT FUNCTION AppService.getMessage WITH otherName=Hello!
 LOG [AppService] RETURNED FUNCTION AppService.getMessage
@@ -228,7 +248,7 @@ TypeScript에서는 파라미터에 데코레이터를 적용시킬 때 데코�
 
 그러나, object 안에 로그에 **포함하고 싶지 않은 정보**가 있다면 이를 제거하고 출력하기 위해, 또는 **원하는 정보만 간추려서** 출력하기 위해 options의 `includePath`와 `excludePath`를 사용합니다.
 
-```ts title:"Logged의 options 정의" hlt:options:Path
+```ts title:"Logged의 options 정의"
 type Path = string;
 type Paths = Path[];
 
@@ -237,10 +257,10 @@ interface IncludeExcludePath {
     excludePath?: Paths;
 }
 
-export function Logged (name: string, options?: IncludeExcludePath): ParameterDecoratorType;
+export function Logged(name: string, options?: IncludeExcludePath): ParameterDecoratorType;
 ```
 
-```ts file:app.controller.ts hlt:password:
+```ts file:app.controller.ts
 import { Get } from '@nestjs/common';
 import { AppService, UserData } from './app.service';
 import { LoggedController } from 'nestlogged';
@@ -256,25 +276,49 @@ export class AppController {
       email: 'john.doe@example.com',
       auth: {
         loginName: 'john.doe',
-        password: 'password',
+        password: 'password', /* 이걸 숨겨야만 합니다!!! */
       },
     });
   }
 }
 ```
 
-```log title:"콘솔 출력" hlt:\"auth:}
+```ts file:app.service.ts
+import { Logged, LoggedInjectable } from 'nestlogged';
+
+export interface UserData {
+  displayName: string;
+  email: string;
+  auth: {
+    loginName: string;
+    password: string;
+  };
+}
+
+@LoggedInjectable()
+export class AppService {
+  createNewUser(
+    @Logged('user', { excludePath: ['auth.password'] }) // 이렇게 숨길 수 있습니다!!
+    newUserData: UserData,
+  ) {
+    // create new user
+    return newUserData;
+  }
+}
+```
+
+```log title:"콘솔 출력"
 LOG [AppController] HIT ENDPOINT AppController.createNewUser (AppController::/[GET])
 LOG [AppService] HIT FUNCTION AppService.createNewUser WITH user={"displayName":"John Doe","email":"john.doe@example.com","auth":{"loginName":"john.doe"}}
 LOG [AppService] RETURNED FUNCTION AppService.createNewUser
 LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
 ```
 
-## Each 사용법
+### Each
 
 `@Logged()` 데코레이터의 `name` 파라미터 위치에 `object`를 줄 경우 `each` 파라미터로 간주됩니다.
 
-```ts title:"Logged의 Each 파라미터 오버로드" hl:5
+```ts title:"Logged의 Each 파라미터 오버로드"
 export type Path = string;
 export type Each = Record<string, Path>;
 
@@ -301,9 +345,10 @@ export class AppService {
   @Returns()
   createNewUser(
     @Logged({
-      displayName: 'displayName',
-      email: 'email',
-      loginName: 'auth.loginName',
+      displayName: 'displayName', // displayName 따로,
+      email: 'email', // email 따로,
+      loginName: 'auth.loginName', // loginName 따로 출력합니다.
+      // 하나의 object로 출력하지 않아요.
     })
     newUserData: UserData,
   ) {
@@ -313,11 +358,11 @@ export class AppService {
 }
 ```
 
-```log title:"출력 로그" hlt:displayName:loginName=john.doe
-[Nest] 28896  - 05/14/2025, 2:18:27 AM     LOG [AppController] HIT ENDPOINT AppController.createNewUser (AppController::/[GET])
-[Nest] 28896  - 05/14/2025, 2:18:27 AM     LOG [AppService] HIT FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
-[Nest] 28896  - 05/14/2025, 2:18:27 AM     LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH {"displayName":"John Doe","email":"john.doe@example.com","auth":{"loginName":"john.doe","password":"password"}}
-[Nest] 28896  - 05/14/2025, 2:18:27 AM     LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
+```log title:"출력 로그"
+LOG [AppController] HIT ENDPOINT AppController.createNewUser (AppController::/[GET])
+LOG [AppService] HIT FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
+LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH {"displayName":"John Doe","email":"john.doe@example.com","auth":{"loginName":"john.doe","password":"password"}}
+LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
 ```
 
 ---
@@ -325,29 +370,140 @@ export class AppService {
 
 `@Returns()` 데코레이터를 사용하면 메서드의 반환값을 로그에 포함할 수 있습니다.
 
+`@Returns()`의 파라미터는 `@Logged()`의 파라미터와 거의 일치합니다. 따라서 `@Logged()`와 비슷한 방식으로 `@Returns()`를 사용할 수 있습니다.
+
+다만 한 가지 다른 점은, `@Returns()`는 `@Logged()`와 다르게 `name`을 주지 않아도 무관합니다.
+
 * 아무런 파라미터 없이 사용할 경우 반환값을 전부 출력합니다.
 
-```ts file:app.service.ts hl:5
-import { LoggedInjectable, Returns } from 'nestlogged';
+```ts file:app.service.ts
+import { Logged, LoggedInjectable, Returns } from 'nestlogged';
+
+export interface UserData {
+  displayName: string;
+  email: string;
+  auth: {
+    loginName: string;
+    password: string;
+  };
+}
 
 @LoggedInjectable()
 export class AppService {
-  @Returns()
-  getHello(): string {
-    return 'Hello World!';
+  @Returns() // 반환값을 로그하고자 합니다.
+  createNewUser(
+    @Logged({
+      displayName: 'displayName',
+      email: 'email',
+      loginName: 'auth.loginName',
+    })
+    newUserData: UserData,
+  ) {
+    // create new user
+    return newUserData;
   }
 }
 ```
 
-```log title:"출력 로그" hlt:"WITH Hello World!"
-LOG [AppController] HIT ENDPOINT AppController.getHello (AppController::/[GET])
-LOG [AppService] HIT FUNCTION AppService.getHello
-LOG [AppService] RETURNED FUNCTION AppService.getHello WITH Hello World!
-LOG [AppController] RETURNED ENDPOINT AppController.getHello (AppController::/[GET])
+```log title:"출력 로그"
+LOG [AppController] HIT ENDPOINT AppController.createNewUser (AppController::/[GET])
+LOG [AppService] HIT FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
+LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH {"displayName":"John Doe","email":"john.doe@example.com","auth":{"loginName":"john.doe","password":"password"}}
+LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
+```
+
+* `@Logged()`의 파라미터인 name과 options를 사용할 수도 있습니다.
+
+```ts file:app.service.ts
+import { Logged, LoggedInjectable, Returns } from 'nestlogged';
+
+export interface UserData {
+  displayName: string;
+  email: string;
+  auth: {
+    loginName: string;
+    password: string;
+  };
+}
+
+@LoggedInjectable()
+export class AppService {
+  @Returns('createdUser', { excludePath: ['auth.password'] })
+  createNewUser(
+    @Logged({
+      displayName: 'displayName',
+      email: 'email',
+      loginName: 'auth.loginName',
+    })
+    newUserData: UserData,
+  ) {
+    // create new user
+    return newUserData;
+  }
+}
+```
+
+```log title:"출력 로그"
+LOG [AppController] HIT ENDPOINT AppController.createNewUser (AppController::/[GET])
+LOG [AppService] HIT FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
+LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH createdUser={"displayName":"John Doe","email":"john.doe@example.com","auth":{"loginName":"john.doe"}}
+LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
+```
+
+* 또는, Each를 사용할 수도 있습니다.
+
+```ts file:app.service.ts
+import { Logged, LoggedInjectable, Returns } from 'nestlogged';
+
+export interface UserData {
+  displayName: string;
+  email: string;
+  auth: {
+    loginName: string;
+    password: string;
+  };
+}
+
+@LoggedInjectable()
+export class AppService {
+  @Returns({
+    displayName: 'displayName',
+    email: 'email',
+    loginName: 'auth.loginName'
+  })
+  createNewUser(
+    @Logged({
+      displayName: 'displayName',
+      email: 'email',
+      loginName: 'auth.loginName',
+    })
+    newUserData: UserData,
+  ) {
+    // create new user
+    return newUserData;
+  }
+}
+```
+
+```log title:"출력 로그"
+LOG [AppController] HIT ENDPOINT AppController.createNewUser (AppController::/[GET])
+LOG [AppService] HIT FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
+LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
+LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
 ```
 
 ---
 # 기타 특수함수 로그
+
+지금까지는 Controller와 Service에 관해서만 다뤘습니다.
+
+NestLogged는 이외의 ExceptionFilter, Guard, Interceptor, Middleware에 대해서도 로그 데코레이터를 지원합니다.
+
+* ExceptionFilter = `LoggedExceptionFilter`
+* Guard = `LoggedGuard`
+* Interceptor = `LoggedInterceptor`
+* Middleware = `LoggedMiddleware`
+
 ---
 # 로그 주입과 범위 로깅
 ---

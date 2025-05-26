@@ -47,7 +47,9 @@
     "@types/unist": "^3.0.3",
     "@vitejs/plugin-react": "^4.3.4",
     "hast-util-from-html": "^2.0.3",
+    "hast-util-to-text": "^4.0.2",
     "jsdom": "^26.0.0",
+    "lowlight": "^3.3.0",
     "mdast-util-from-markdown": "^2.0.2",
     "rehype": "^13.0.2",
     "rehype-slug": "^6.0.0",
@@ -59,6 +61,7 @@
     "typescript": "^5.7.2",
     "unist-util-visit": "^5.0.0",
     "unplugin-icons": "^22.1.0",
+    "vfile": "^6.0.3",
     "vite": "^6.1.0",
     "vitest": "^3.0.5",
     "web-vitals": "^4.2.4"

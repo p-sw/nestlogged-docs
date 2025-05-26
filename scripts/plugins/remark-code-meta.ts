@@ -95,7 +95,7 @@ export default function remarkCodeMeta(): RemarkPlugin {
           data: {
             hName: "div",
             hProperties: {
-              classNAme: "remark-code-meta__lang",
+              className: "remark-code-meta__lang",
             },
           },
           children: [

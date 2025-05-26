@@ -257,4 +257,142 @@
             padding-right: calc(var(--tw-prose-pre-padding-inline) / 2);
         }
     }
+
+    .remark-callout-header {
+        display: flex;
+        flex-direction: row;
+        gap: 0.25rem;
+        align-items: center;
+
+        --font-size: 1.125rem;
+        font-size: var(--font-size);
+        @apply font-bold;
+
+        > svg:first-child {
+            width: var(--font-size);
+            height: var(--font-size);
+        }
+    }
+
+    .remark-callout {
+        --callout-border-opacity: 0.25;
+        --callout-background-opacity: 0.1;
+        --callout-border-radius: 0.375rem;
+
+        --callout-info: 8, 109, 221;
+        --callout-summary: 0, 191, 188;
+        --callout-success: 8, 185, 78;
+        --callout-warning: 236, 117, 0;
+        --callout-failure: 233, 49, 71;
+        --callout-example: 120, 82, 238;
+        --callout-quote: 158, 158, 158;
+
+        border-left: 0;
+
+        padding: 1.5rem;
+        border-radius: var(--callout-border-radius);
+
+        background-color: rgba(
+            var(--callout-color),
+            var(--callout-background-opacity)
+        );
+        color: rgb(var(--callout-color));
+
+        & > p {
+            margin-bottom: 0;
+            margin-top: 1em;
+        }
+    }
+
+    .remark-callout__note {
+        --callout-color: var(--callout-info);
+    }
+    .remark-callout__info {
+        --callout-color: var(--callout-info);
+    }
+    .remark-callout__todo {
+        --callout-color: var(--callout-info);
+    }
+
+    .remark-callout__abstract {
+        --callout-color: var(--callout-summary);
+    }
+    .remark-callout__summary {
+        --callout-color: var(--callout-summary);
+    }
+    .remark-callout__tldr {
+        --callout-color: var(--callout-summary);
+    }
+    .remark-callout__tip {
+        --callout-color: var(--callout-summary);
+    }
+    .remark-callout__hint {
+        --callout-color: var(--callout-summary);
+    }
+    .remark-callout__important {
+        --callout-color: var(--callout-summary);
+    }
+
+    .remark-callout__success {
+        --callout-color: var(--callout-success);
+    }
+    .remark-callout__check {
+        --callout-color: var(--callout-success);
+    }
+    .remark-callout__done {
+        --callout-color: var(--callout-success);
+    }
+
+    .remark-callout__question {
+        --callout-color: var(--callout-warning);
+    }
+    .remark-callout__help {
+        --callout-color: var(--callout-warning);
+    }
+    .remark-callout__faq {
+        --callout-color: var(--callout-warning);
+    }
+    .remark-callout__warning {
+        --callout-color: var(--callout-warning);
+    }
+    .remark-callout__caution {
+        --callout-color: var(--callout-warning);
+    }
+    .remark-callout__attention {
+        --callout-color: var(--callout-warning);
+    }
+
+    .remark-callout__failure {
+        --callout-color: var(--callout-failure);
+    }
+    .remark-callout__fail {
+        --callout-color: var(--callout-failure);
+    }
+    .remark-callout__missing {
+        --callout-color: var(--callout-failure);
+    }
+    .remark-callout__danger {
+        --callout-color: var(--callout-failure);
+    }
+    .remark-callout__error {
+        --callout-color: var(--callout-failure);
+    }
+    .remark-callout__bug {
+        --callout-color: var(--callout-failure);
+    }
+
+    .remark-callout__example {
+        --callout-color: var(--callout-example);
+    }
+    .remark-callout__quote {
+        --callout-color: var(--callout-quote);
+    }
+
+    .prose > blockquote > * {
+        &::before,
+        &::after {
+            content: none;
+        }
+        font-style: normal;
+    }
 }

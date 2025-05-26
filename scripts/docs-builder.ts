@@ -5,6 +5,7 @@ import withTocExport from "@stefanprobst/rehype-extract-toc/mdx";
 import { matchesGlob, join } from "path";
 import { readFile, readdir, writeFile } from "fs/promises";
 import remarkCodeMeta from "./plugins/remark-code-meta.js";
+import remarkCallout from "./plugins/remark-callout.js";
 
 async function main() {
   const files = (await readdir("src/documentations", { recursive: true }))
@@ -15,7 +16,7 @@ async function main() {
     files.map(async (fn) => {
       const compiled = await compile(await readFile(fn), {
         jsx: true,
-        remarkPlugins: [remarkCodeMeta],
+        remarkPlugins: [remarkCodeMeta, remarkCallout],
         rehypePlugins: [withSlug, withToc, withTocExport],
       });
       await writeFile(

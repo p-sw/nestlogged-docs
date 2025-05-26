@@ -61,7 +61,7 @@ export function DocLayout({
 
   return (
     <>
-      <main className="min-w-0 max-w-none w-full prose prose-slate dark:prose-invert p-8">
+      <main className="min-w-0 max-w-none w-full prose prose-slate prose-pre:0 dark:prose-invert p-8">
         <MDX components={{ a: A(`/${ctx.lang}/docs/${ctx.version}`) }} />
       </main>
       <aside className="sticky w-fit min-w-48 top-12 h-[calc(100vh-var(--spacing)*12)] p-4 border-l border-border overflow-y-auto hidden xl:block flex-none">

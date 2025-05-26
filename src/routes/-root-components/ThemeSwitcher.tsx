@@ -11,6 +11,13 @@ import { MoonStar, Sun } from "lucide-react";
 
 import { useDebugValue, useEffect, useState } from "react";
 
+function replaceUtil(original: string, idx: number, newstr: string) {
+  return original
+    .split(" ")
+    .map((o, i) => (i !== idx ? o : newstr))
+    .join(" ");
+}
+
 type ThemeSystem = "system";
 type Theme = ThemeSystem | "dark" | "light";
 type ThemeReals = Exclude<Theme, ThemeSystem>;
@@ -33,13 +40,24 @@ export default function ThemeSwitcher() {
    * useCallback will cache the result of this function between re-renders
    */
   function colorSchemeChangeListener() {
-    theme == "system" && setReal(getRealValue());
+    const real = getRealValue();
+    if (theme === "system") {
+      setReal(real);
+    }
+    document.body.className = replaceUtil(
+      document.body.className,
+      1,
+      `system-${real}`,
+    );
   }
   useDebugValue(`theme: ${theme} | real: ${real}`);
 
   useEffect(() => {
-    setReal(getRealValue());
-    document.body.className = theme;
+    const real = getRealValue();
+    setReal(real);
+    if (theme === "system") document.body.className = `${theme} system-${real}`;
+    else
+      document.body.className = replaceUtil(document.body.className, 0, theme);
     localStorage.setItem(THEME_KEY, theme);
   }, [theme]);
   useEffect(() => {

@@ -5,16 +5,7 @@ import { createContext, use, type ReactNode } from "react";
 import type { MDXProps } from "mdx/types";
 import { A } from "./MDXOverrider";
 import VersionSelector from "./VersionSelector";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 

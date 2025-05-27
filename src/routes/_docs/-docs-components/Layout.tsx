@@ -5,6 +5,18 @@ import { createContext, use, type ReactNode } from "react";
 import type { MDXProps } from "mdx/types";
 import { A } from "./MDXOverrider";
 import VersionSelector from "./VersionSelector";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
+import { Menu } from "lucide-react";
 
 interface LayoutContextContent {
   lang: Lang;
@@ -28,7 +40,27 @@ interface VersionLayoutProps extends LayoutContextContent {
 export function VersionLayout({ lang, version, navmap }: VersionLayoutProps) {
   return (
     <div className="flex flex-row w-full">
-      <aside className="w-64 sticky top-12 h-[calc(100vh-var(--spacing)*12)] p-4 border-r border-border overflow-y-auto flex-none">
+      <Drawer direction="top">
+        <DrawerTrigger asChild>
+          <Button
+            variant="default"
+            className="lg:hidden block fixed top-16 left-4"
+          >
+            <Menu />
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent className="flex flex-col justify-center items-center p-4 gap-4">
+          <VersionSelector />
+          {Object.entries(navmap).map(([name, to]) => (
+            <Button asChild variant="link" key={name}>
+              <Link from={`/${lang}/docs/${version}`} to={to}>
+                {name}
+              </Link>
+            </Button>
+          ))}
+        </DrawerContent>
+      </Drawer>
+      <aside className="hidden lg:block w-64 sticky top-12 h-[calc(100vh-var(--spacing)*12)] p-4 border-r border-border overflow-y-auto flex-none">
         <VersionSelector />
         <h2 className="text-xl font-semibold mb-2">
           {translations["pages"][lang]}

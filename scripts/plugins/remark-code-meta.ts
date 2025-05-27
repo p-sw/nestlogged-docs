@@ -43,13 +43,17 @@ export default function remarkCodeMeta(): RemarkPlugin {
         .reduce(
           (acc, item) => {
             const index = item.indexOf(":");
-            acc[item.substring(0, index)] = item
+            const key = item.substring(0, index);
+            const value = item
               .substring(index + 1)
               .replace(/"(.+)"/, "$1")
               .replace(/'(.+)'/, "$1");
+            if (acc[key] && Array.isArray(acc[key])) acc[key].push(value);
+            else if (acc[key]) acc[key] = [acc[key], value];
+            else acc[key] = value;
             return acc;
           },
-          {} as Record<string, string>,
+          {} as Record<string, string | string[]>,
         );
       const replacedNode: ParentNode = {
         type: "paragraph",
@@ -82,6 +86,13 @@ export default function remarkCodeMeta(): RemarkPlugin {
         },
       };
       if ("file" in params || "title" in params) {
+        const title = params["file"]
+          ? Array.isArray(params["file"])
+            ? params["file"][0]
+            : params["file"]
+          : Array.isArray(params["title"])
+            ? params["title"][0]
+            : params["title"];
         metaBlock.children!.push({
           type: "paragraph",
           data: {
@@ -93,7 +104,7 @@ export default function remarkCodeMeta(): RemarkPlugin {
           children: [
             {
               type: "text",
-              value: params["file"] ?? params["title"],
+              value: title,
             },
           ],
         });

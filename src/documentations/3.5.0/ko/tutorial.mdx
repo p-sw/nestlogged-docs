@@ -722,4 +722,31 @@ export class AppGuard implements CanActivate {
 ```
 
 ---
-# 추가: Pino 적용하기
+# 추가: JSON 출력
+
+JSON 형식으로 출력하기 위해서 다음과 같이 ConsoleLogger에 옵션을 줄 수 있습니다.
+
+```ts file:main.ts
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { ConsoleLogger } from 'nestlogged';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule, {
+    logger: new ConsoleLogger({
+      json: true,
+    }),
+  });
+  await app.listen(process.env.PORT ?? 3000);
+}
+bootstrap();
+```
+
+```json title:"콘솔 출력"
+{"level":"log","pid":11910,"timestamp":1748333891753,"message":"HIT ENDPOINT AppController.createNewUser (AppController::/[GET]) ","scopeId":"13DX8fdLQpe3jO8ECpdS3Q/0000000002","scope":[["AppController","createNewUser"]],"context":"AppController"}
+{"level":"log","pid":11910,"timestamp":1748333891753,"message":"This is a log from injected logger!","scopeId":"13DX8fdLQpe3jO8ECpdS3Q/0000000002","scope":[["AppController","createNewUser"]],"context":"AppController"}
+{"level":"log","pid":11910,"timestamp":1748333891753,"message":"HIT FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe","scopeId":"13DX8fdLQpe3jO8ECpdS3Q/0000000002","scope":[["AppController","createNewUser"],["AppService","createNewUser"]],"context":"AppService"}
+{"level":"log","pid":11910,"timestamp":1748333891753,"message":"User created: John Doe","scopeId":"13DX8fdLQpe3jO8ECpdS3Q/0000000002","scope":[["AppController","createNewUser"],["AppService","createNewUser"]],"context":"AppService"}
+{"level":"log","pid":11910,"timestamp":1748333891753,"message":"RETURNED FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe","scopeId":"13DX8fdLQpe3jO8ECpdS3Q/0000000002","scope":[["AppController","createNewUser"],["AppService","createNewUser"]],"context":"AppService"}
+{"level":"log","pid":11910,"timestamp":1748333891753,"message":"RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET]) ","scopeId":"13DX8fdLQpe3jO8ECpdS3Q/0000000002","scope":[["AppController","createNewUser"]],"context":"AppController"}
+```

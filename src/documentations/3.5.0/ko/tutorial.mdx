@@ -43,7 +43,7 @@ NestLogged에서는 NestJS의 기본 ConsoleLogger를 확장한 새로운 Consol
 
 만약 ConsoleLogger를 사용하지 않고 nestjs의 기본값을 사용하실 경우 오류는 나지 않습니다만, 출력이 이상하게 꼬이거나 예상치 못한 출력이 있을 수도 있습니다.
 
-자세한 내용은 [로그 주입과 범위 로깅](#로그 주입과 범위 로깅) 섹션에서 설명합니다.
+자세한 내용은 [ConsoleLogger의 의미](deep-dive#ConsoleLogger의-의미) 챕터에서 설명합니다.
 
 NestLogged의 ConsoleLogger를 적용하는 방법은 다음과 같습니다.
 
@@ -493,18 +493,233 @@ LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController
 ```
 
 ---
-# 기타 특수함수 로그
+# 로거 주입
+
+함수의 호출과 반환, 입력과 출력을 로깅하는 방법을 알아보았습니다.
+
+이제 함수 내부에서 직접 로그를 남기고 싶다면 어떻게 해야 하는지 보여드리겠습니다.
+
+## InjectLogger
+
+`@InjectLogger` 데코레이터를 사용해 함수의 파라미터 형태로 로거를 받을 수 있습니다.
+
+```ts file:app.controller.ts
+import { Get } from '@nestjs/common';
+import { AppService, UserData } from './app.service';
+import { InjectLogger, LoggedController, ScopedLogger } from 'nestlogged';
+
+@LoggedController()
+export class AppController {
+  constructor(private readonly appService: AppService) {}
+
+  @Get()
+  createNewUser(@InjectLogger logger: ScopedLogger): UserData {
+    logger.log(`This is a log from injected logger!`);
+
+    return this.appService.createNewUser(
+      {
+        displayName: 'John Doe',
+        email: 'john.doe@example.com',
+        auth: {
+          loginName: 'john.doe',
+          password: 'password',
+        },
+      },
+      logger,
+    );
+  }
+}
+```
+
+```ts file:app.service.ts
+import {
+  InjectLogger,
+  Logged,
+  LoggedInjectable,
+  Returns,
+  ScopedLogger,
+} from 'nestlogged';
+
+export interface UserData {
+  displayName: string;
+  email: string;
+  auth: {
+    loginName: string;
+    password: string;
+  };
+}
+
+@LoggedInjectable()
+export class AppService {
+  @Returns({
+    displayName: 'displayName',
+    email: 'email',
+    loginName: 'auth.loginName',
+  })
+  createNewUser(
+    @Logged({
+      displayName: 'displayName',
+      email: 'email',
+      loginName: 'auth.loginName',
+    })
+    newUserData: UserData,
+    @InjectLogger logger: ScopedLogger,
+  ) {
+    // create new user
+    logger.log(`User created: ${newUserData.displayName}`);
+    return newUserData;
+  }
+}
+```
+
+```log title:"로그 출력"
+LOG [AppController] ID=[d5IfszIYQXOFPh910xyaTA/0000000002] | AppController.createNewUser: HIT ENDPOINT AppController.createNewUser (AppController::/[GET])
+LOG [AppController] ID=[d5IfszIYQXOFPh910xyaTA/0000000002] | AppController.createNewUser: This is a log from injected logger!
+LOG [AppService] ID=[d5IfszIYQXOFPh910xyaTA/0000000002] | AppController.createNewUser -> AppService.createNewUser: HIT FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
+LOG [AppService] ID=[d5IfszIYQXOFPh910xyaTA/0000000002] | AppController.createNewUser -> AppService.createNewUser: User created: John Doe
+LOG [AppService] ID=[d5IfszIYQXOFPh910xyaTA/0000000002] | AppController.createNewUser -> AppService.createNewUser: RETURNED FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
+LOG [AppController] ID=[d5IfszIYQXOFPh910xyaTA/0000000002] | AppController.createNewUser: RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
+```
+
+로거 주입은 추가적으로 다음 기능들을 제공합니다:
+1. 로그에 **ID**가 포함된 것을 확인하실 수 있습니다. 이 ID는 각 Request에 대해 고유하게 생성됩니다. 이 ID는 동시다발적인 여러 Request로 인해 로그가 섞였을 경우 고유한 Request를 트래킹하는 것을 가능하게 합니다.
+2. 한 Request에 대해 **함수의 호출 흐름**을 마치 Traceback과 같이 확인할 수 있습니다. 만약 서비스에 오류가 발생했다면 Request ID 하나로 어느 함수 실행 도중 오류가 발생했는지를 바로 알 수 있습니다.
+
+## 타입 오류 이해하기
+
+`@InjectLogger` 데코레이터를 이용해 `logger` 파라미터를 함수에 추가하면, 직접 함수를 호출했을 때에 logger를 주지 않았을 경우 타입 오류가 발생합니다.
+
+```ts title:"예시"
+this.appService.createNewUser(userData) // logger를 주지 않았으므로 타입 오류가 발생합니다!
+```
+
+그러나, 실제로 런타임 오류는 **발생하지 않습니다**.
+이는 데코레이터가 함수의 타입을 바꿀 수는 없기 때문에 생기는 일입니다.
+
+간단하게 해명하면, `@InjectLogger`가 붙은 파라미터에 `ScopedLogger`의 인스턴스가 제공되지 않았을 경우 NestLogged는 자동으로 **새 `ScopedLogger` 인스턴스를 제공합니다.**
+
+다시 말해, `@InjectLogger` 파라미터는 함수 호출에서 주어졌든 주어지지 않았든 무조건 존재합니다(NestLogged 내부에서 오류가 발생하지 않는 한).
+
+따라서, 타입 오류를 해결하기 위해 optional chaining(`logger?.log`) 또는 non-null assertion(`logger!`)을 사용하는 것으로 이 문제를 간단하게 해결할 수 있습니다.
+
+```ts file:app.service.ts
+createNewUser(@InjectLogger _logger?: ScopedLogger) {
+  // logger는 ScopedLogger | undefined이지만, 실제로는 무조건 ScopedLogger입니다.
+  const logger = _logger! // 따라서 non-null assertion을 사용해도 안전합니다.
+}
+```
+
+---
+# 기타 특수 로그 데코레이터
 
 지금까지는 Controller와 Service에 관해서만 다뤘습니다.
 
-NestLogged는 이외의 ExceptionFilter, Guard, Interceptor, Middleware에 대해서도 로그 데코레이터를 지원합니다.
+NestLogged는 이외의 Guard, Interceptor, ExceptionFilter, Middleware에 대해서도 로그 데코레이터를 지원합니다.
 
-* ExceptionFilter = `LoggedExceptionFilter`
 * Guard = `LoggedGuard`
 * Interceptor = `LoggedInterceptor`
+* ExceptionFilter = `LoggedExceptionFilter`
 * Middleware = `LoggedMiddleware`
 
----
-# 로그 주입과 범위 로깅
+## LoggedGuard
+
+다음은 Guard에 `@LoggedGuard`를 적용하는 코드입니다.
+
+```ts file:app.guard.ts
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { LoggedGuard } from 'nestlogged';
+import { Observable } from 'rxjs';
+
+@Injectable() // Guard에는 LoggedInjectable을 쓰지 않습니다
+export class AppGuard implements CanActivate {
+  @LoggedGuard() // 대신 메서드에 @LoggedGuard를 붙입니다
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    return true;
+  }
+}
+```
+
+## LoggedInterceptor
+
+다음은 Interceptor에 `@LoggedInterceptor`를 적용하는 코드입니다.
+
+```ts file:app.interceptor.ts
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+} from '@nestjs/common';
+import { LoggedInterceptor } from 'nestlogged';
+import { Observable } from 'rxjs';
+
+@Injectable() // @LoggedInjectable 대신
+export class AppInterceptor implements NestInterceptor {
+  @LoggedInterceptor() // 메서드에 @LoggedInterceptor를 사용합니다
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    return next.handle();
+  }
+}
+```
+
+## LoggedExceptionFilter
+
+다음은 Exception Filter에 `@LoggedExceptionFilter`를 적용하는 코드입니다.
+
+```ts file:app.filter.ts
+import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
+import { LoggedExceptionFilter } from 'nestlogged';
+
+@Catch()
+export class AppFilter<T> implements ExceptionFilter {
+  @LoggedExceptionFilter() // 메서드에 @LoggedExceptionFilter를 사용합니다
+  catch(exception: T, host: ArgumentsHost) {}
+}
+```
+
+## LoggedMiddleware
+
+다음은 클래스 형태의 Middleware에 `@LoggedMiddleware`를 적용하는 코드입니다.
+
+```ts file:app.middleware.ts
+import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
+import { LoggedExceptionFilter } from 'nestlogged';
+
+@Catch()
+export class AppFilter<T> implements ExceptionFilter {
+  @LoggedExceptionFilter() // 메서드에 @LoggedExceptionFilter를 사용합니다
+  catch(exception: T, host: ArgumentsHost) {}
+}
+```
+
+>[!error]
+> Middleware는 클래스 미들웨어와 함수 미들웨어, 두 가지 형태로 구현이 가능합니다.
+> 
+> 타입스크립트는 클래스 메서드가 아닌 함수에 데코레이터를 지원하지 않으므로, 지금은 `@LoggedMiddleware`를 클래스 구현이 아닌 함수 구현에 적용할 방법이 없습니다.
+>
+> 함수 형태의 Middleware에 대한 지원은 이후 버전에 곧 추가될 예정입니다.
+
+## InjectLogger 사용
+
+위의 Middleware, Filter, Guard, Interceptor 안에서도 마찬가지로 `@InjectLogger`를 사용해 내부에서 로거에 접근할 수 있고, Request ID가 공유됩니다.
+
+다만 `implements` 문법으로 인해 함수의 타입이 강제되면서 반드시 타입을 optional하도록 추가해야 합니다.
+
+```ts file:app.guard.ts
+@Injectable()
+export class AppGuard implements CanActivate {
+  @LoggedGuard()
+  canActivate(
+    context: ExecutionContext,
+    @InjectLogger logger: ScopedLogger, // 오류가 발생합니다
+    @InjectLogger logger?: ScopedLogger, // 오류가 발생하지 않습니다
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    return true;
+  }
+}
+```
+
 ---
 # 추가: Pino 적용하기

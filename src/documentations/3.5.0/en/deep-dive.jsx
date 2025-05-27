@@ -6,7 +6,7 @@ function _createMdxContent(props) {
     p: "p",
     ...props.components
   };
-  return <_components.p>{"작성중"}</_components.p>;
+  return <_components.p>{"Writing.."}</_components.p>;
 }
 export default function MDXContent(props = {}) {
   const {wrapper: MDXLayout} = props.components || ({});

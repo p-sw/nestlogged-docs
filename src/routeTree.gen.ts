@@ -18,6 +18,7 @@ import { Route as MainEnIndexImport } from './routes/_main/en/index'
 import { Route as DocsKoDocsIndexImport } from './routes/_docs/ko.docs/index'
 import { Route as DocsEnDocsIndexImport } from './routes/_docs/en.docs/index'
 import { Route as DocsKoDocs35Import } from './routes/_docs/ko.docs/3_5'
+import { Route as DocsEnDocs35Import } from './routes/_docs/en.docs/3_5'
 import { Route as DocsKoDocs35IndexImport } from './routes/_docs/ko.docs/3_5/index'
 import { Route as DocsEnDocs35IndexImport } from './routes/_docs/en.docs/3_5/index'
 import { Route as DocsKoDocs35TutorialImport } from './routes/_docs/ko.docs/3_5/tutorial'
@@ -68,6 +69,12 @@ const DocsKoDocs35Route = DocsKoDocs35Import.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const DocsEnDocs35Route = DocsEnDocs35Import.update({
+  id: '/_docs/en/docs/3_5',
+  path: '/en/docs/3_5',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const DocsKoDocs35IndexRoute = DocsKoDocs35IndexImport.update({
   id: '/',
   path: '/',
@@ -75,9 +82,9 @@ const DocsKoDocs35IndexRoute = DocsKoDocs35IndexImport.update({
 } as any)
 
 const DocsEnDocs35IndexRoute = DocsEnDocs35IndexImport.update({
-  id: '/_docs/en/docs/3_5/',
-  path: '/en/docs/3_5/',
-  getParentRoute: () => rootRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => DocsEnDocs35Route,
 } as any)
 
 const DocsKoDocs35TutorialRoute = DocsKoDocs35TutorialImport.update({
@@ -93,15 +100,15 @@ const DocsKoDocs35DeepDiveRoute = DocsKoDocs35DeepDiveImport.update({
 } as any)
 
 const DocsEnDocs35TutorialRoute = DocsEnDocs35TutorialImport.update({
-  id: '/_docs/en/docs/3_5/tutorial',
-  path: '/en/docs/3_5/tutorial',
-  getParentRoute: () => rootRoute,
+  id: '/tutorial',
+  path: '/tutorial',
+  getParentRoute: () => DocsEnDocs35Route,
 } as any)
 
 const DocsEnDocs35DeepDiveRoute = DocsEnDocs35DeepDiveImport.update({
-  id: '/_docs/en/docs/3_5/deep-dive',
-  path: '/en/docs/3_5/deep-dive',
-  getParentRoute: () => rootRoute,
+  id: '/deep-dive',
+  path: '/deep-dive',
+  getParentRoute: () => DocsEnDocs35Route,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -136,6 +143,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainKoIndexImport
       parentRoute: typeof MainImport
     }
+    '/_docs/en/docs/3_5': {
+      id: '/_docs/en/docs/3_5'
+      path: '/en/docs/3_5'
+      fullPath: '/en/docs/3_5'
+      preLoaderRoute: typeof DocsEnDocs35Import
+      parentRoute: typeof rootRoute
+    }
     '/_docs/ko/docs/3_5': {
       id: '/_docs/ko/docs/3_5'
       path: '/ko/docs/3_5'
@@ -159,17 +173,17 @@ declare module '@tanstack/react-router' {
     }
     '/_docs/en/docs/3_5/deep-dive': {
       id: '/_docs/en/docs/3_5/deep-dive'
-      path: '/en/docs/3_5/deep-dive'
+      path: '/deep-dive'
       fullPath: '/en/docs/3_5/deep-dive'
       preLoaderRoute: typeof DocsEnDocs35DeepDiveImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof DocsEnDocs35Import
     }
     '/_docs/en/docs/3_5/tutorial': {
       id: '/_docs/en/docs/3_5/tutorial'
-      path: '/en/docs/3_5/tutorial'
+      path: '/tutorial'
       fullPath: '/en/docs/3_5/tutorial'
       preLoaderRoute: typeof DocsEnDocs35TutorialImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof DocsEnDocs35Import
     }
     '/_docs/ko/docs/3_5/deep-dive': {
       id: '/_docs/ko/docs/3_5/deep-dive'
@@ -187,10 +201,10 @@ declare module '@tanstack/react-router' {
     }
     '/_docs/en/docs/3_5/': {
       id: '/_docs/en/docs/3_5/'
-      path: '/en/docs/3_5'
-      fullPath: '/en/docs/3_5'
+      path: '/'
+      fullPath: '/en/docs/3_5/'
       preLoaderRoute: typeof DocsEnDocs35IndexImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof DocsEnDocs35Import
     }
     '/_docs/ko/docs/3_5/': {
       id: '/_docs/ko/docs/3_5/'
@@ -216,6 +230,22 @@ const MainRouteChildren: MainRouteChildren = {
 
 const MainRouteWithChildren = MainRoute._addFileChildren(MainRouteChildren)
 
+interface DocsEnDocs35RouteChildren {
+  DocsEnDocs35DeepDiveRoute: typeof DocsEnDocs35DeepDiveRoute
+  DocsEnDocs35TutorialRoute: typeof DocsEnDocs35TutorialRoute
+  DocsEnDocs35IndexRoute: typeof DocsEnDocs35IndexRoute
+}
+
+const DocsEnDocs35RouteChildren: DocsEnDocs35RouteChildren = {
+  DocsEnDocs35DeepDiveRoute: DocsEnDocs35DeepDiveRoute,
+  DocsEnDocs35TutorialRoute: DocsEnDocs35TutorialRoute,
+  DocsEnDocs35IndexRoute: DocsEnDocs35IndexRoute,
+}
+
+const DocsEnDocs35RouteWithChildren = DocsEnDocs35Route._addFileChildren(
+  DocsEnDocs35RouteChildren,
+)
+
 interface DocsKoDocs35RouteChildren {
   DocsKoDocs35DeepDiveRoute: typeof DocsKoDocs35DeepDiveRoute
   DocsKoDocs35TutorialRoute: typeof DocsKoDocs35TutorialRoute
@@ -237,6 +267,7 @@ export interface FileRoutesByFullPath {
   '': typeof MainRouteWithChildren
   '/en': typeof MainEnIndexRoute
   '/ko': typeof MainKoIndexRoute
+  '/en/docs/3_5': typeof DocsEnDocs35RouteWithChildren
   '/ko/docs/3_5': typeof DocsKoDocs35RouteWithChildren
   '/en/docs': typeof DocsEnDocsIndexRoute
   '/ko/docs': typeof DocsKoDocsIndexRoute
@@ -244,7 +275,7 @@ export interface FileRoutesByFullPath {
   '/en/docs/3_5/tutorial': typeof DocsEnDocs35TutorialRoute
   '/ko/docs/3_5/deep-dive': typeof DocsKoDocs35DeepDiveRoute
   '/ko/docs/3_5/tutorial': typeof DocsKoDocs35TutorialRoute
-  '/en/docs/3_5': typeof DocsEnDocs35IndexRoute
+  '/en/docs/3_5/': typeof DocsEnDocs35IndexRoute
   '/ko/docs/3_5/': typeof DocsKoDocs35IndexRoute
 }
 
@@ -269,6 +300,7 @@ export interface FileRoutesById {
   '/_main': typeof MainRouteWithChildren
   '/_main/en/': typeof MainEnIndexRoute
   '/_main/ko/': typeof MainKoIndexRoute
+  '/_docs/en/docs/3_5': typeof DocsEnDocs35RouteWithChildren
   '/_docs/ko/docs/3_5': typeof DocsKoDocs35RouteWithChildren
   '/_docs/en/docs/': typeof DocsEnDocsIndexRoute
   '/_docs/ko/docs/': typeof DocsKoDocsIndexRoute
@@ -287,6 +319,7 @@ export interface FileRouteTypes {
     | ''
     | '/en'
     | '/ko'
+    | '/en/docs/3_5'
     | '/ko/docs/3_5'
     | '/en/docs'
     | '/ko/docs'
@@ -294,7 +327,7 @@ export interface FileRouteTypes {
     | '/en/docs/3_5/tutorial'
     | '/ko/docs/3_5/deep-dive'
     | '/ko/docs/3_5/tutorial'
-    | '/en/docs/3_5'
+    | '/en/docs/3_5/'
     | '/ko/docs/3_5/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -316,6 +349,7 @@ export interface FileRouteTypes {
     | '/_main'
     | '/_main/en/'
     | '/_main/ko/'
+    | '/_docs/en/docs/3_5'
     | '/_docs/ko/docs/3_5'
     | '/_docs/en/docs/'
     | '/_docs/ko/docs/'
@@ -331,23 +365,19 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MainRoute: typeof MainRouteWithChildren
+  DocsEnDocs35Route: typeof DocsEnDocs35RouteWithChildren
   DocsKoDocs35Route: typeof DocsKoDocs35RouteWithChildren
   DocsEnDocsIndexRoute: typeof DocsEnDocsIndexRoute
   DocsKoDocsIndexRoute: typeof DocsKoDocsIndexRoute
-  DocsEnDocs35DeepDiveRoute: typeof DocsEnDocs35DeepDiveRoute
-  DocsEnDocs35TutorialRoute: typeof DocsEnDocs35TutorialRoute
-  DocsEnDocs35IndexRoute: typeof DocsEnDocs35IndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MainRoute: MainRouteWithChildren,
+  DocsEnDocs35Route: DocsEnDocs35RouteWithChildren,
   DocsKoDocs35Route: DocsKoDocs35RouteWithChildren,
   DocsEnDocsIndexRoute: DocsEnDocsIndexRoute,
   DocsKoDocsIndexRoute: DocsKoDocsIndexRoute,
-  DocsEnDocs35DeepDiveRoute: DocsEnDocs35DeepDiveRoute,
-  DocsEnDocs35TutorialRoute: DocsEnDocs35TutorialRoute,
-  DocsEnDocs35IndexRoute: DocsEnDocs35IndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -362,12 +392,10 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/_main",
+        "/_docs/en/docs/3_5",
         "/_docs/ko/docs/3_5",
         "/_docs/en/docs/",
-        "/_docs/ko/docs/",
-        "/_docs/en/docs/3_5/deep-dive",
-        "/_docs/en/docs/3_5/tutorial",
-        "/_docs/en/docs/3_5/"
+        "/_docs/ko/docs/"
       ]
     },
     "/": {
@@ -388,6 +416,14 @@ export const routeTree = rootRoute
       "filePath": "_main/ko/index.tsx",
       "parent": "/_main"
     },
+    "/_docs/en/docs/3_5": {
+      "filePath": "_docs/en.docs/3_5.tsx",
+      "children": [
+        "/_docs/en/docs/3_5/deep-dive",
+        "/_docs/en/docs/3_5/tutorial",
+        "/_docs/en/docs/3_5/"
+      ]
+    },
     "/_docs/ko/docs/3_5": {
       "filePath": "_docs/ko.docs/3_5.tsx",
       "children": [
@@ -403,10 +439,12 @@ export const routeTree = rootRoute
       "filePath": "_docs/ko.docs/index.tsx"
     },
     "/_docs/en/docs/3_5/deep-dive": {
-      "filePath": "_docs/en.docs/3_5/deep-dive.tsx"
+      "filePath": "_docs/en.docs/3_5/deep-dive.tsx",
+      "parent": "/_docs/en/docs/3_5"
     },
     "/_docs/en/docs/3_5/tutorial": {
-      "filePath": "_docs/en.docs/3_5/tutorial.tsx"
+      "filePath": "_docs/en.docs/3_5/tutorial.tsx",
+      "parent": "/_docs/en/docs/3_5"
     },
     "/_docs/ko/docs/3_5/deep-dive": {
       "filePath": "_docs/ko.docs/3_5/deep-dive.tsx",
@@ -417,7 +455,8 @@ export const routeTree = rootRoute
       "parent": "/_docs/ko/docs/3_5"
     },
     "/_docs/en/docs/3_5/": {
-      "filePath": "_docs/en.docs/3_5/index.tsx"
+      "filePath": "_docs/en.docs/3_5/index.tsx",
+      "parent": "/_docs/en/docs/3_5"
     },
     "/_docs/ko/docs/3_5/": {
       "filePath": "_docs/ko.docs/3_5/index.tsx",

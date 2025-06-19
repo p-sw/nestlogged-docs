@@ -1,6 +1,5 @@
 import { readdir, lstat, writeFile, rm, mkdir } from "node:fs/promises";
 import { join, parse } from "node:path";
-import test from "node:test";
 
 const DOCUMENTATION_PATH = "src/documentations";
 const VERSION_LIST_PATH = "src/routes/_docs/-docs-components/versionList.ts";

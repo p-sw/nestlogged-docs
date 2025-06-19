@@ -9,7 +9,8 @@
     "route:watch": "tsr watch",
     "test": "vitest run",
     "build:scripts": "rimraf scripts/dist && tsc -p scripts.tsconfig.json",
-    "build:docs": "pnpm run build:scripts && node --no-warnings=ExperimentalWarning scripts/dist/docs-builder.js"
+    "build:docs": "pnpm run build:scripts && node --no-warnings=ExperimentalWarning scripts/dist/docs-builder.js",
+    "build:routes": "pnpm run build:scripts && node scripts/dist/version_writer.js && pnpm run route"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.14",

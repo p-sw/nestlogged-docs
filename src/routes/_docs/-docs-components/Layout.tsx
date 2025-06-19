@@ -8,14 +8,15 @@ import VersionSelector from "./VersionSelector";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
+import { type VersionPath, versionPath } from "./versionList";
 
 interface LayoutContextContent {
   lang: Lang;
-  version: "3_5";
+  version: VersionPath;
 }
 const LayoutContext = createContext<LayoutContextContent>({
   lang: "en",
-  version: "3_5",
+  version: versionPath.at(-1)!,
 });
 
 const translations: Record<string, Record<Lang, string>> = {

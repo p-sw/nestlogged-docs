@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import Tutorial, { tableOfContents } from "@/documentations/3.5.0/ko/tutorial";
 import { DocLayout } from "../../-docs-components/Layout";
 
-export const Route = createFileRoute("/_docs/ko/docs/3_5/tutorial")({
+export const Route = createFileRoute("/_docs/ko/docs/3_5_0/tutorial")({
   component: RouteComponent,
 });
 

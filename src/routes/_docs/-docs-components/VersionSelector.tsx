@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/popover";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { versionList } from "./versionList";
 
-export const versions = ["3.5"];
 function gotovers(vers: string): string {
   return window.location.pathname.replace(
     /(\/[^/]{2}\/docs\/)([_\d]+)(\/.*)/,
@@ -26,7 +26,7 @@ function gotovers(vers: string): string {
 
 export default function VersionSelector() {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(versions.at(-1));
+  const [value, setValue] = useState(versionList.at(-1));
   const navigate = useNavigate();
 
   return (
@@ -48,7 +48,7 @@ export default function VersionSelector() {
           <CommandList>
             <CommandEmpty>No versions found.</CommandEmpty>
             <CommandGroup>
-              {versions.map((version) => (
+              {versionList.map((version) => (
                 <CommandItem
                   key={version}
                   value={version}

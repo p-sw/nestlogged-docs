@@ -365,6 +365,8 @@ LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH {"displayName":
 LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
 ```
 
+>[!info] In the example above, we only covered parameters for Services, but you can use them in the same way with any method where log decorators can be applied, such as Controllers.
+
 ---
 # Logging Return Values
 
@@ -492,6 +494,8 @@ LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH displayName=Joh
 LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
 ```
 
+>[!info] In the example above, we only covered parameters for Services, but you can use them in the same way with any method where log decorators can be applied, such as Controllers.
+
 ---
 # Logger Injection
 
@@ -582,8 +586,18 @@ LOG [AppController] ID=[d5IfszIYQXOFPh910xyaTA/0000000002] | AppController.creat
 ```
 
 Logger injection additionally provides the following features:
-1. You can see that the logs include an **ID**. This ID is uniquely generated for each Request. It allows you to track individual Requests when logs from multiple simultaneous Requests are mixed.
-2. You can see the **function call flow** for a Request, similar to a traceback. If an error occurs in your service, you can immediately identify which function execution caused the error with just one Request ID.
+1. You can see that the logs include an **ID**. This ID is uniquely generated for each Request. It allows you to track individual Requests when logs from multiple simultaneous Requests are mixed. We call it **Request ID** or **Scope ID**.
+2. You can see the **function call flow** for a Request, similar to a traceback. If an error occurs in your service, you can immediately identify which function execution caused the error with just one Request ID. We call it **Scope**.
+
+## Accessing Scope
+
+When you need to use the Request ID or Scope included in the logs, you can retrieve the values using ScopedLogger's methods.
+
+* `ScopedLogger.getScopeId(): string`
+* `ScopedLogger.getCurrentScope(): (string | string[])[]`
+
+> [!warning] Using these functions in actual application logic (such as database IDs) is not recommended.  
+> This feature was created to expose request IDs to users to make debugging easier when errors occur.
 
 ## Understanding Type Errors
 

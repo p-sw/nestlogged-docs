@@ -136,7 +136,7 @@ async function buildDocVersion(version: string) {
                   ? `"${formatDocumentToTitle(document)}"`
                   : formatDocumentToTitle(document)) +
                 ': "' +
-                document +
+                (document === "index" ? "" : document) +
                 '"',
             )
             .join(",\n"),

@@ -119,11 +119,6 @@ async function buildDocVersion(version: string) {
     const VERSION_PATH = version.replaceAll(".", "_");
     const VERSION_INDEX_PATH = join(LANG_DOC_BASE, VERSION_PATH + ".tsx");
     const VERSION_DIR_PATH = join(LANG_DOC_BASE, VERSION_PATH);
-    await rm(LANG_DOC_BASE, {
-      force: true,
-      recursive: true,
-    });
-    await mkdir(LANG_DOC_BASE);
 
     const documents = await getDocuments(version, lang);
     await writeFile(
@@ -176,6 +171,18 @@ export type Version = typeof versionList[number];
 export const versionPath = [${versions.map((v) => '"' + v.replaceAll(".", "_") + '"').join(", ")}] as const;
 export type VersionPath = typeof versionPath[number];`,
   );
+
+  for (const lang of languages) {
+    const LANG_DOC_BASE = DOC_BASE.replace("$LANG", lang);
+    await rm(LANG_DOC_BASE, { force: true, recursive: true });
+    await mkdir(LANG_DOC_BASE);
+    await writeFile(
+      join(LANG_DOC_BASE, "index.ts"),
+      await templateSolver<LANG_INDEX_TEMPLATE_SLOT>(LANG_INDEX_TEMPLATE, {
+        LANG: lang,
+      }),
+    );
+  }
 
   for (const version of versions) {
     await buildDocVersion(version);

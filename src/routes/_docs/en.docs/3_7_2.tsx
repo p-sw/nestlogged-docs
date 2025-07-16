@@ -6,9 +6,9 @@ export const Route = createFileRoute("/_docs/en/docs/3_6_1")({
 });
 
 const navmap = {
-  "Deep Dive": "deep-dive",
   Index: "",
-  Tutorial: "tutorial"
+  Tutorial: "tutorial",
+  "Deep Dive": "deep-dive",
 };
 
 function RouteComponent() {

@@ -726,13 +726,16 @@ export class AppFilter<T> implements ExceptionFilter {
 다음은 클래스 형태의 Middleware에 `@LoggedMiddleware`를 적용하는 코드입니다.
 
 ```ts file:app.middleware.ts
-import { ArgumentsHost, Catch, ExceptionFilter } from "@nestjs/common";
-import { LoggedExceptionFilter } from "nestlogged";
+import { Injectable, NestMiddleware } from "@nestjs/common";
+import { LoggedMiddleware } from "nestlogged";
+import { Request, Response, NextFunction } from "express";
 
-@Catch()
-export class AppFilter<T> implements ExceptionFilter {
-  @LoggedExceptionFilter() // 메서드에 @LoggedExceptionFilter를 사용합니다
-  catch(exception: T, host: ArgumentsHost) {}
+@Injectable()
+export class AppMiddleware implements NestMiddleware {
+  @LoggedMiddleware() // 메서드에 @LoggedMiddleware를 사용합니다
+  use(req: Request, res: Response, next: NextFunction) {
+    next();
+  }
 }
 ```
 

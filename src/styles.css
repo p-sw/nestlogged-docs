@@ -118,7 +118,8 @@
     --dark-sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
-.dark {
+.dark,
+.system.system-dark {
     --background: var(--dark-background);
     --foreground: var(--dark-foreground);
     --card: var(--dark-card);
@@ -152,42 +153,6 @@
     --sidebar-ring: var(--dark-sidebar-ring);
 }
 
-@media (prefers-color-scheme: dark) {
-    .system {
-        --background: var(--dark-background);
-        --foreground: var(--dark-foreground);
-        --card: var(--dark-card);
-        --card-foreground: var(--dark-card-foreground);
-        --popover: var(--dark-popover);
-        --popover-foreground: var(--dark-popover-foreground);
-        --primary: var(--dark-primary);
-        --primary-foreground: var(--dark-primary-foreground);
-        --secondary: var(--dark-secondary);
-        --secondary-foreground: var(--dark-secondary-foreground);
-        --muted: var(--dark-muted);
-        --muted-foreground: var(--dark-muted-foreground);
-        --accent: var(--dark-accent);
-        --accent-foreground: var(--dark-accent-foreground);
-        --destructive: var(--dark-destructive);
-        --border: var(--dark-border);
-        --input: var(--dark-input);
-        --ring: var(--dark-ring);
-        --chart-1: var(--dark-chart-1);
-        --chart-2: var(--dark-chart-2);
-        --chart-3: var(--dark-chart-3);
-        --chart-4: var(--dark-chart-4);
-        --chart-5: var(--dark-chart-5);
-        --sidebar: var(--dark-sidebar);
-        --sidebar-foreground: var(--dark-sidebar-foreground);
-        --sidebar-primary: var(--dark-sidebar-primary);
-        --sidebar-primary-foreground: var(--dark-sidebar-primary-foreground);
-        --sidebar-accent: var(--dark-sidebar-accent);
-        --sidebar-accent-foreground: var(--dark-sidebar-accent-foreground);
-        --sidebar-border: var(--dark-sidebar-border);
-        --sidebar-ring: var(--dark-sidebar-ring);
-    }
-}
-
 @layer base {
     * {
         @apply border-border outline-ring/50;
@@ -216,5 +181,430 @@
             "Segoe UI Symbol",
             sans-serif;
         @apply bg-background text-foreground;
+    }
+}
+
+@layer utilities {
+    .remark-code-meta-wrapper {
+        @apply bg-accent text-foreground rounded-md;
+
+        > pre {
+            @apply mt-0 pt-0 bg-transparent text-foreground;
+        }
+
+        --tw-prose-pre-padding-inline: 1.1428571em;
+        --tw-prose-pre-padding-y: 0.8571429em;
+
+        .remark-code-meta-block {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding-inline-start: var(--tw-prose-pre-padding-inline);
+            padding-inline-end: var(--tw-prose-pre-padding-inline);
+            padding-top: var(--tw-prose-pre-padding-y);
+            padding-bottom: calc(var(--tw-prose-pre-padding-y) / 2);
+        }
+
+        .remark-code-meta__filename,
+        .remark-code-meta__lang {
+            @apply bg-white/20 rounded-md;
+
+            padding-top: calc(var(--tw-prose-pre-padding-y) / 8);
+            padding-bottom: calc(var(--tw-prose-pre-padding-y) / 8);
+            padding-left: calc(var(--tw-prose-pre-padding-inline) / 2);
+            padding-right: calc(var(--tw-prose-pre-padding-inline) / 2);
+        }
+    }
+
+    .remark-callout-header {
+        display: flex;
+        flex-direction: row;
+        gap: 0.25rem;
+        align-items: center;
+
+        --font-size: 1.125rem;
+        font-size: var(--font-size);
+        @apply font-bold;
+
+        > svg:first-child {
+            width: var(--font-size);
+            height: var(--font-size);
+        }
+    }
+
+    .remark-callout {
+        --callout-border-opacity: 0.25;
+        --callout-background-opacity: 0.1;
+        --callout-border-radius: 0.375rem;
+
+        --callout-info: 8, 109, 221;
+        --callout-summary: 0, 191, 188;
+        --callout-success: 8, 185, 78;
+        --callout-warning: 236, 117, 0;
+        --callout-failure: 233, 49, 71;
+        --callout-example: 120, 82, 238;
+        --callout-quote: 158, 158, 158;
+
+        border-left: 0;
+
+        padding: 1.5rem;
+        border-radius: var(--callout-border-radius);
+
+        background-color: rgba(
+            var(--callout-color),
+            var(--callout-background-opacity)
+        );
+        color: rgb(var(--callout-color));
+
+        & > p {
+            margin-bottom: 0;
+            margin-top: 1em;
+        }
+    }
+
+    .remark-callout__note {
+        --callout-color: var(--callout-info);
+    }
+    .remark-callout__info {
+        --callout-color: var(--callout-info);
+    }
+    .remark-callout__todo {
+        --callout-color: var(--callout-info);
+    }
+
+    .remark-callout__abstract {
+        --callout-color: var(--callout-summary);
+    }
+    .remark-callout__summary {
+        --callout-color: var(--callout-summary);
+    }
+    .remark-callout__tldr {
+        --callout-color: var(--callout-summary);
+    }
+    .remark-callout__tip {
+        --callout-color: var(--callout-summary);
+    }
+    .remark-callout__hint {
+        --callout-color: var(--callout-summary);
+    }
+    .remark-callout__important {
+        --callout-color: var(--callout-summary);
+    }
+
+    .remark-callout__success {
+        --callout-color: var(--callout-success);
+    }
+    .remark-callout__check {
+        --callout-color: var(--callout-success);
+    }
+    .remark-callout__done {
+        --callout-color: var(--callout-success);
+    }
+
+    .remark-callout__question {
+        --callout-color: var(--callout-warning);
+    }
+    .remark-callout__help {
+        --callout-color: var(--callout-warning);
+    }
+    .remark-callout__faq {
+        --callout-color: var(--callout-warning);
+    }
+    .remark-callout__warning {
+        --callout-color: var(--callout-warning);
+    }
+    .remark-callout__caution {
+        --callout-color: var(--callout-warning);
+    }
+    .remark-callout__attention {
+        --callout-color: var(--callout-warning);
+    }
+
+    .remark-callout__failure {
+        --callout-color: var(--callout-failure);
+    }
+    .remark-callout__fail {
+        --callout-color: var(--callout-failure);
+    }
+    .remark-callout__missing {
+        --callout-color: var(--callout-failure);
+    }
+    .remark-callout__danger {
+        --callout-color: var(--callout-failure);
+    }
+    .remark-callout__error {
+        --callout-color: var(--callout-failure);
+    }
+    .remark-callout__bug {
+        --callout-color: var(--callout-failure);
+    }
+
+    .remark-callout__example {
+        --callout-color: var(--callout-example);
+    }
+    .remark-callout__quote {
+        --callout-color: var(--callout-quote);
+    }
+
+    .prose > blockquote > * {
+        &::before,
+        &::after {
+            content: none;
+        }
+        font-style: normal;
+    }
+
+    .prose :where(code):not(:where(pre code)) {
+        &::after,
+        &::before {
+            content: "";
+        }
+        @apply bg-black/5 dark:bg-white/20 rounded-sm px-1 mx-0.5 py-0.5 text-[0.9em];
+    }
+}
+
+.system.system-dark .hljs,
+.dark .hljs {
+    /*!
+      Theme: Tokyo-night-Dark
+      origin: https://github.com/enkia/tokyo-night-vscode-theme
+      Description: Original highlight.js style
+      Author: (c) Henri Vandersleyen <hvandersleyen@gmail.com>
+      License: see project LICENSE
+      Touched: 2022
+    */
+
+    /*  Comment */
+    .hljs-meta,
+    .hljs-comment {
+        color: #565f89;
+    }
+
+    /* Red */
+    /*INFO: This keyword, HTML elements, Regex group symbol, CSS units, Terminal Red */
+    .hljs-tag,
+    .hljs-doctag,
+    .hljs-selector-id,
+    .hljs-selector-class,
+    .hljs-regexp,
+    .hljs-template-tag,
+    .hljs-selector-pseudo,
+    .hljs-selector-attr,
+    .hljs-variable.language_,
+    .hljs-deletion {
+        color: #f7768e;
+    }
+
+    /*Orange */
+    /*INFO: Number and Boolean constants, Language support constants */
+    .hljs-variable,
+    .hljs-template-variable,
+    .hljs-number,
+    .hljs-literal,
+    .hljs-type,
+    .hljs-params,
+    .hljs-link {
+        color: #ff9e64;
+    }
+
+    /*  Yellow */
+    /* INFO:  	Function parameters, Regex character sets, Terminal Yellow */
+    .hljs-built_in,
+    .hljs-attribute {
+        color: #e0af68;
+    }
+    /* cyan */
+    /* INFO: Language support functions, CSS HTML elements */
+    .hljs-selector-tag {
+        color: #2ac3de;
+    }
+
+    /* light blue */
+    /* INFO: Object properties, Regex quantifiers and flags, Markdown headings, Terminal Cyan, Markdown code, Import/export keywords */
+    .hljs-keyword,
+    .hljs-title.function_,
+    .hljs-title,
+    .hljs-title.class_,
+    .hljs-title.class_.inherited__,
+    .hljs-subst,
+    .hljs-property {
+        color: #7dcfff;
+    }
+
+    /*Green*/
+    /* INFO: Object literal keys, Markdown links, Terminal Green */
+    .hljs-selector-tag {
+        color: #73daca;
+    }
+
+    /*Green(er) */
+    /* INFO: Strings, CSS class names */
+    .hljs-quote,
+    .hljs-string,
+    .hljs-symbol,
+    .hljs-bullet,
+    .hljs-addition {
+        color: #9ece6a;
+    }
+
+    /* Blue */
+    /* INFO:  	Function names, CSS property names, Terminal Blue */
+    .hljs-code,
+    .hljs-formula,
+    .hljs-section {
+        color: #7aa2f7;
+    }
+
+    /* Magenta */
+    /*INFO: Control Keywords, Storage Types, Regex symbols and operators, HTML Attributes, Terminal Magenta */
+    .hljs-name,
+    .hljs-keyword,
+    .hljs-operator,
+    .hljs-keyword,
+    .hljs-char.escape_,
+    .hljs-attr {
+        color: #bb9af7;
+    }
+
+    /* white*/
+    /* INFO: Variables, Class names, Terminal White */
+    .hljs-punctuation {
+        color: #c0caf5;
+    }
+
+    .hljs {
+        background: #1a1b26;
+        color: #9aa5ce;
+    }
+
+    .hljs-emphasis {
+        font-style: italic;
+    }
+
+    .hljs-strong {
+        font-weight: bold;
+    }
+}
+
+.hljs {
+    /*!
+      Theme: Tokyo-night-light
+      origin: https://github.com/enkia/tokyo-night-vscode-theme
+      Description: Original highlight.js style
+      Author: (c) Henri Vandersleyen <hvandersleyen@gmail.com>
+      License: see project LICENSE
+      Touched: 2022
+    */
+
+    /*  Comment */
+    .hljs-meta,
+    .hljs-comment {
+        color: #9699a3;
+    }
+
+    /* Red */
+    /*INFO: This keyword, HTML elements, Regex group symbol, CSS units, Terminal Red */
+    .hljs-tag,
+    .hljs-doctag,
+    .hljs-selector-id,
+    .hljs-selector-class,
+    .hljs-regexp,
+    .hljs-template-tag,
+    .hljs-selector-pseudo,
+    .hljs-selector-attr,
+    .hljs-variable.language_,
+    .hljs-deletion {
+        color: #8c4351;
+    }
+
+    /*Orange */
+    /*INFO: Number and Boolean constants, Language support constants */
+    .hljs-variable,
+    .hljs-template-variable,
+    .hljs-number,
+    .hljs-literal,
+    .hljs-type,
+    .hljs-params,
+    .hljs-link {
+        color: #965027;
+    }
+
+    /*  Yellow */
+    /* INFO:  	Function parameters, Regex character sets, Terminal Yellow */
+    .hljs-built_in,
+    .hljs-attribute {
+        color: #8f5e15;
+    }
+    /* cyan */
+    /* INFO: Language support functions, CSS HTML elements */
+    .hljs-selector-tag {
+        color: #166775;
+    }
+
+    /* light blue */
+    /* INFO: Object properties, Regex quantifiers and flags, Markdown headings, Terminal Cyan, Markdown code, Import/export keywords */
+    .hljs-keyword,
+    .hljs-title.function_,
+    .hljs-title,
+    .hljs-title.class_,
+    .hljs-title.class_.inherited__,
+    .hljs-subst,
+    .hljs-property {
+        color: #0f4b6e;
+    }
+
+    /*Green*/
+    /* INFO: Object literal keys, Markdown links, Terminal Green */
+    .hljs-selector-tag {
+        color: #33635c;
+    }
+
+    /*Green(er) */
+    /* INFO: Strings, CSS class names */
+    .hljs-quote,
+    .hljs-string,
+    .hljs-symbol,
+    .hljs-bullet,
+    .hljs-addition {
+        color: #485e30;
+    }
+
+    /* Blue */
+    /* INFO:  	Function names, CSS property names, Terminal Blue */
+    .hljs-code,
+    .hljs-formula,
+    .hljs-section {
+        color: #34548a;
+    }
+
+    /* Magenta */
+    /*INFO: Control Keywords, Storage Types, Regex symbols and operators, HTML Attributes, Terminal Magenta */
+    .hljs-name,
+    .hljs-keyword,
+    .hljs-operator,
+    .hljs-keyword,
+    .hljs-char.escape_,
+    .hljs-attr {
+        color: #5a4a78;
+    }
+
+    /* white*/
+    /* INFO: Variables, Class names, Terminal White */
+    .hljs-punctuation {
+        color: #343b58;
+    }
+
+    .hljs {
+        background: #d5d6db;
+        color: #565a6e;
+    }
+
+    .hljs-emphasis {
+        font-style: italic;
+    }
+
+    .hljs-strong {
+        font-weight: bold;
     }
 }

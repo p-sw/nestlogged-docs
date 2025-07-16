@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import DeepDive, { tableOfContents } from "@/documentations/3.7.2/ko/deep-dive";
+import DeepDive, { tableOfContents } from "@/documentations/3.7/en/deep-dive";
 import { DocLayout } from "../../-docs-components/Layout";
 
-export const Route = createFileRoute("/_docs/ko/docs/3_6_1/deep-dive")({
+export const Route = createFileRoute("/_docs/en/docs/3_7/deep-dive")({
   component: RouteComponent,
 });
 

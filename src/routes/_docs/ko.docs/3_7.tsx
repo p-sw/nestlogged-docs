@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { VersionLayout } from "../-docs-components/Layout";
 
-export const Route = createFileRoute("/_docs/ko/docs/3_6_1")({
+export const Route = createFileRoute("/_docs/ko/docs/3_7")({
   component: RouteComponent,
 });
 
@@ -12,5 +12,5 @@ const navmap = {
 };
 
 function RouteComponent() {
-  return <VersionLayout lang="ko" navmap={navmap} version="3_6_1" />;
+  return <VersionLayout lang="ko" navmap={navmap} version="3_7" />;
 }

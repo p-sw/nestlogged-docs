@@ -17,14 +17,14 @@ import { Route as MainKoIndexImport } from './routes/_main/ko/index'
 import { Route as MainEnIndexImport } from './routes/_main/en/index'
 import { Route as DocsKoDocsIndexImport } from './routes/_docs/ko.docs/index'
 import { Route as DocsEnDocsIndexImport } from './routes/_docs/en.docs/index'
-import { Route as DocsKoDocs361Import } from './routes/_docs/ko.docs/3_6_1'
-import { Route as DocsEnDocs361Import } from './routes/_docs/en.docs/3_6_1'
-import { Route as DocsKoDocs361IndexImport } from './routes/_docs/ko.docs/3_6_1/index'
-import { Route as DocsEnDocs361IndexImport } from './routes/_docs/en.docs/3_6_1/index'
-import { Route as DocsKoDocs361TutorialImport } from './routes/_docs/ko.docs/3_6_1/tutorial'
-import { Route as DocsKoDocs361DeepDiveImport } from './routes/_docs/ko.docs/3_6_1/deep-dive'
-import { Route as DocsEnDocs361TutorialImport } from './routes/_docs/en.docs/3_6_1/tutorial'
-import { Route as DocsEnDocs361DeepDiveImport } from './routes/_docs/en.docs/3_6_1/deep-dive'
+import { Route as DocsKoDocs37Import } from './routes/_docs/ko.docs/3_7'
+import { Route as DocsEnDocs37Import } from './routes/_docs/en.docs/3_7'
+import { Route as DocsKoDocs37IndexImport } from './routes/_docs/ko.docs/3_7/index'
+import { Route as DocsEnDocs37IndexImport } from './routes/_docs/en.docs/3_7/index'
+import { Route as DocsKoDocs37TutorialImport } from './routes/_docs/ko.docs/3_7/tutorial'
+import { Route as DocsKoDocs37DeepDiveImport } from './routes/_docs/ko.docs/3_7/deep-dive'
+import { Route as DocsEnDocs37TutorialImport } from './routes/_docs/en.docs/3_7/tutorial'
+import { Route as DocsEnDocs37DeepDiveImport } from './routes/_docs/en.docs/3_7/deep-dive'
 
 // Create/Update Routes
 
@@ -63,52 +63,52 @@ const DocsEnDocsIndexRoute = DocsEnDocsIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const DocsKoDocs361Route = DocsKoDocs361Import.update({
-  id: '/_docs/ko/docs/3_6_1',
-  path: '/ko/docs/3_6_1',
+const DocsKoDocs37Route = DocsKoDocs37Import.update({
+  id: '/_docs/ko/docs/3_7',
+  path: '/ko/docs/3_7',
   getParentRoute: () => rootRoute,
 } as any)
 
-const DocsEnDocs361Route = DocsEnDocs361Import.update({
-  id: '/_docs/en/docs/3_6_1',
-  path: '/en/docs/3_6_1',
+const DocsEnDocs37Route = DocsEnDocs37Import.update({
+  id: '/_docs/en/docs/3_7',
+  path: '/en/docs/3_7',
   getParentRoute: () => rootRoute,
 } as any)
 
-const DocsKoDocs361IndexRoute = DocsKoDocs361IndexImport.update({
+const DocsKoDocs37IndexRoute = DocsKoDocs37IndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => DocsKoDocs361Route,
+  getParentRoute: () => DocsKoDocs37Route,
 } as any)
 
-const DocsEnDocs361IndexRoute = DocsEnDocs361IndexImport.update({
+const DocsEnDocs37IndexRoute = DocsEnDocs37IndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => DocsEnDocs361Route,
+  getParentRoute: () => DocsEnDocs37Route,
 } as any)
 
-const DocsKoDocs361TutorialRoute = DocsKoDocs361TutorialImport.update({
+const DocsKoDocs37TutorialRoute = DocsKoDocs37TutorialImport.update({
   id: '/tutorial',
   path: '/tutorial',
-  getParentRoute: () => DocsKoDocs361Route,
+  getParentRoute: () => DocsKoDocs37Route,
 } as any)
 
-const DocsKoDocs361DeepDiveRoute = DocsKoDocs361DeepDiveImport.update({
+const DocsKoDocs37DeepDiveRoute = DocsKoDocs37DeepDiveImport.update({
   id: '/deep-dive',
   path: '/deep-dive',
-  getParentRoute: () => DocsKoDocs361Route,
+  getParentRoute: () => DocsKoDocs37Route,
 } as any)
 
-const DocsEnDocs361TutorialRoute = DocsEnDocs361TutorialImport.update({
+const DocsEnDocs37TutorialRoute = DocsEnDocs37TutorialImport.update({
   id: '/tutorial',
   path: '/tutorial',
-  getParentRoute: () => DocsEnDocs361Route,
+  getParentRoute: () => DocsEnDocs37Route,
 } as any)
 
-const DocsEnDocs361DeepDiveRoute = DocsEnDocs361DeepDiveImport.update({
+const DocsEnDocs37DeepDiveRoute = DocsEnDocs37DeepDiveImport.update({
   id: '/deep-dive',
   path: '/deep-dive',
-  getParentRoute: () => DocsEnDocs361Route,
+  getParentRoute: () => DocsEnDocs37Route,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -143,18 +143,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainKoIndexImport
       parentRoute: typeof MainImport
     }
-    '/_docs/en/docs/3_6_1': {
-      id: '/_docs/en/docs/3_6_1'
-      path: '/en/docs/3_6_1'
-      fullPath: '/en/docs/3_6_1'
-      preLoaderRoute: typeof DocsEnDocs361Import
+    '/_docs/en/docs/3_7': {
+      id: '/_docs/en/docs/3_7'
+      path: '/en/docs/3_7'
+      fullPath: '/en/docs/3_7'
+      preLoaderRoute: typeof DocsEnDocs37Import
       parentRoute: typeof rootRoute
     }
-    '/_docs/ko/docs/3_6_1': {
-      id: '/_docs/ko/docs/3_6_1'
-      path: '/ko/docs/3_6_1'
-      fullPath: '/ko/docs/3_6_1'
-      preLoaderRoute: typeof DocsKoDocs361Import
+    '/_docs/ko/docs/3_7': {
+      id: '/_docs/ko/docs/3_7'
+      path: '/ko/docs/3_7'
+      fullPath: '/ko/docs/3_7'
+      preLoaderRoute: typeof DocsKoDocs37Import
       parentRoute: typeof rootRoute
     }
     '/_docs/en/docs/': {
@@ -171,47 +171,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsKoDocsIndexImport
       parentRoute: typeof rootRoute
     }
-    '/_docs/en/docs/3_6_1/deep-dive': {
-      id: '/_docs/en/docs/3_6_1/deep-dive'
+    '/_docs/en/docs/3_7/deep-dive': {
+      id: '/_docs/en/docs/3_7/deep-dive'
       path: '/deep-dive'
-      fullPath: '/en/docs/3_6_1/deep-dive'
-      preLoaderRoute: typeof DocsEnDocs361DeepDiveImport
-      parentRoute: typeof DocsEnDocs361Import
+      fullPath: '/en/docs/3_7/deep-dive'
+      preLoaderRoute: typeof DocsEnDocs37DeepDiveImport
+      parentRoute: typeof DocsEnDocs37Import
     }
-    '/_docs/en/docs/3_6_1/tutorial': {
-      id: '/_docs/en/docs/3_6_1/tutorial'
+    '/_docs/en/docs/3_7/tutorial': {
+      id: '/_docs/en/docs/3_7/tutorial'
       path: '/tutorial'
-      fullPath: '/en/docs/3_6_1/tutorial'
-      preLoaderRoute: typeof DocsEnDocs361TutorialImport
-      parentRoute: typeof DocsEnDocs361Import
+      fullPath: '/en/docs/3_7/tutorial'
+      preLoaderRoute: typeof DocsEnDocs37TutorialImport
+      parentRoute: typeof DocsEnDocs37Import
     }
-    '/_docs/ko/docs/3_6_1/deep-dive': {
-      id: '/_docs/ko/docs/3_6_1/deep-dive'
+    '/_docs/ko/docs/3_7/deep-dive': {
+      id: '/_docs/ko/docs/3_7/deep-dive'
       path: '/deep-dive'
-      fullPath: '/ko/docs/3_6_1/deep-dive'
-      preLoaderRoute: typeof DocsKoDocs361DeepDiveImport
-      parentRoute: typeof DocsKoDocs361Import
+      fullPath: '/ko/docs/3_7/deep-dive'
+      preLoaderRoute: typeof DocsKoDocs37DeepDiveImport
+      parentRoute: typeof DocsKoDocs37Import
     }
-    '/_docs/ko/docs/3_6_1/tutorial': {
-      id: '/_docs/ko/docs/3_6_1/tutorial'
+    '/_docs/ko/docs/3_7/tutorial': {
+      id: '/_docs/ko/docs/3_7/tutorial'
       path: '/tutorial'
-      fullPath: '/ko/docs/3_6_1/tutorial'
-      preLoaderRoute: typeof DocsKoDocs361TutorialImport
-      parentRoute: typeof DocsKoDocs361Import
+      fullPath: '/ko/docs/3_7/tutorial'
+      preLoaderRoute: typeof DocsKoDocs37TutorialImport
+      parentRoute: typeof DocsKoDocs37Import
     }
-    '/_docs/en/docs/3_6_1/': {
-      id: '/_docs/en/docs/3_6_1/'
+    '/_docs/en/docs/3_7/': {
+      id: '/_docs/en/docs/3_7/'
       path: '/'
-      fullPath: '/en/docs/3_6_1/'
-      preLoaderRoute: typeof DocsEnDocs361IndexImport
-      parentRoute: typeof DocsEnDocs361Import
+      fullPath: '/en/docs/3_7/'
+      preLoaderRoute: typeof DocsEnDocs37IndexImport
+      parentRoute: typeof DocsEnDocs37Import
     }
-    '/_docs/ko/docs/3_6_1/': {
-      id: '/_docs/ko/docs/3_6_1/'
+    '/_docs/ko/docs/3_7/': {
+      id: '/_docs/ko/docs/3_7/'
       path: '/'
-      fullPath: '/ko/docs/3_6_1/'
-      preLoaderRoute: typeof DocsKoDocs361IndexImport
-      parentRoute: typeof DocsKoDocs361Import
+      fullPath: '/ko/docs/3_7/'
+      preLoaderRoute: typeof DocsKoDocs37IndexImport
+      parentRoute: typeof DocsKoDocs37Import
     }
   }
 }
@@ -230,36 +230,36 @@ const MainRouteChildren: MainRouteChildren = {
 
 const MainRouteWithChildren = MainRoute._addFileChildren(MainRouteChildren)
 
-interface DocsEnDocs361RouteChildren {
-  DocsEnDocs361DeepDiveRoute: typeof DocsEnDocs361DeepDiveRoute
-  DocsEnDocs361TutorialRoute: typeof DocsEnDocs361TutorialRoute
-  DocsEnDocs361IndexRoute: typeof DocsEnDocs361IndexRoute
+interface DocsEnDocs37RouteChildren {
+  DocsEnDocs37DeepDiveRoute: typeof DocsEnDocs37DeepDiveRoute
+  DocsEnDocs37TutorialRoute: typeof DocsEnDocs37TutorialRoute
+  DocsEnDocs37IndexRoute: typeof DocsEnDocs37IndexRoute
 }
 
-const DocsEnDocs361RouteChildren: DocsEnDocs361RouteChildren = {
-  DocsEnDocs361DeepDiveRoute: DocsEnDocs361DeepDiveRoute,
-  DocsEnDocs361TutorialRoute: DocsEnDocs361TutorialRoute,
-  DocsEnDocs361IndexRoute: DocsEnDocs361IndexRoute,
+const DocsEnDocs37RouteChildren: DocsEnDocs37RouteChildren = {
+  DocsEnDocs37DeepDiveRoute: DocsEnDocs37DeepDiveRoute,
+  DocsEnDocs37TutorialRoute: DocsEnDocs37TutorialRoute,
+  DocsEnDocs37IndexRoute: DocsEnDocs37IndexRoute,
 }
 
-const DocsEnDocs361RouteWithChildren = DocsEnDocs361Route._addFileChildren(
-  DocsEnDocs361RouteChildren,
+const DocsEnDocs37RouteWithChildren = DocsEnDocs37Route._addFileChildren(
+  DocsEnDocs37RouteChildren,
 )
 
-interface DocsKoDocs361RouteChildren {
-  DocsKoDocs361DeepDiveRoute: typeof DocsKoDocs361DeepDiveRoute
-  DocsKoDocs361TutorialRoute: typeof DocsKoDocs361TutorialRoute
-  DocsKoDocs361IndexRoute: typeof DocsKoDocs361IndexRoute
+interface DocsKoDocs37RouteChildren {
+  DocsKoDocs37DeepDiveRoute: typeof DocsKoDocs37DeepDiveRoute
+  DocsKoDocs37TutorialRoute: typeof DocsKoDocs37TutorialRoute
+  DocsKoDocs37IndexRoute: typeof DocsKoDocs37IndexRoute
 }
 
-const DocsKoDocs361RouteChildren: DocsKoDocs361RouteChildren = {
-  DocsKoDocs361DeepDiveRoute: DocsKoDocs361DeepDiveRoute,
-  DocsKoDocs361TutorialRoute: DocsKoDocs361TutorialRoute,
-  DocsKoDocs361IndexRoute: DocsKoDocs361IndexRoute,
+const DocsKoDocs37RouteChildren: DocsKoDocs37RouteChildren = {
+  DocsKoDocs37DeepDiveRoute: DocsKoDocs37DeepDiveRoute,
+  DocsKoDocs37TutorialRoute: DocsKoDocs37TutorialRoute,
+  DocsKoDocs37IndexRoute: DocsKoDocs37IndexRoute,
 }
 
-const DocsKoDocs361RouteWithChildren = DocsKoDocs361Route._addFileChildren(
-  DocsKoDocs361RouteChildren,
+const DocsKoDocs37RouteWithChildren = DocsKoDocs37Route._addFileChildren(
+  DocsKoDocs37RouteChildren,
 )
 
 export interface FileRoutesByFullPath {
@@ -267,16 +267,16 @@ export interface FileRoutesByFullPath {
   '': typeof MainRouteWithChildren
   '/en': typeof MainEnIndexRoute
   '/ko': typeof MainKoIndexRoute
-  '/en/docs/3_6_1': typeof DocsEnDocs361RouteWithChildren
-  '/ko/docs/3_6_1': typeof DocsKoDocs361RouteWithChildren
+  '/en/docs/3_7': typeof DocsEnDocs37RouteWithChildren
+  '/ko/docs/3_7': typeof DocsKoDocs37RouteWithChildren
   '/en/docs': typeof DocsEnDocsIndexRoute
   '/ko/docs': typeof DocsKoDocsIndexRoute
-  '/en/docs/3_6_1/deep-dive': typeof DocsEnDocs361DeepDiveRoute
-  '/en/docs/3_6_1/tutorial': typeof DocsEnDocs361TutorialRoute
-  '/ko/docs/3_6_1/deep-dive': typeof DocsKoDocs361DeepDiveRoute
-  '/ko/docs/3_6_1/tutorial': typeof DocsKoDocs361TutorialRoute
-  '/en/docs/3_6_1/': typeof DocsEnDocs361IndexRoute
-  '/ko/docs/3_6_1/': typeof DocsKoDocs361IndexRoute
+  '/en/docs/3_7/deep-dive': typeof DocsEnDocs37DeepDiveRoute
+  '/en/docs/3_7/tutorial': typeof DocsEnDocs37TutorialRoute
+  '/ko/docs/3_7/deep-dive': typeof DocsKoDocs37DeepDiveRoute
+  '/ko/docs/3_7/tutorial': typeof DocsKoDocs37TutorialRoute
+  '/en/docs/3_7/': typeof DocsEnDocs37IndexRoute
+  '/ko/docs/3_7/': typeof DocsKoDocs37IndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -286,12 +286,12 @@ export interface FileRoutesByTo {
   '/ko': typeof MainKoIndexRoute
   '/en/docs': typeof DocsEnDocsIndexRoute
   '/ko/docs': typeof DocsKoDocsIndexRoute
-  '/en/docs/3_6_1/deep-dive': typeof DocsEnDocs361DeepDiveRoute
-  '/en/docs/3_6_1/tutorial': typeof DocsEnDocs361TutorialRoute
-  '/ko/docs/3_6_1/deep-dive': typeof DocsKoDocs361DeepDiveRoute
-  '/ko/docs/3_6_1/tutorial': typeof DocsKoDocs361TutorialRoute
-  '/en/docs/3_6_1': typeof DocsEnDocs361IndexRoute
-  '/ko/docs/3_6_1': typeof DocsKoDocs361IndexRoute
+  '/en/docs/3_7/deep-dive': typeof DocsEnDocs37DeepDiveRoute
+  '/en/docs/3_7/tutorial': typeof DocsEnDocs37TutorialRoute
+  '/ko/docs/3_7/deep-dive': typeof DocsKoDocs37DeepDiveRoute
+  '/ko/docs/3_7/tutorial': typeof DocsKoDocs37TutorialRoute
+  '/en/docs/3_7': typeof DocsEnDocs37IndexRoute
+  '/ko/docs/3_7': typeof DocsKoDocs37IndexRoute
 }
 
 export interface FileRoutesById {
@@ -300,16 +300,16 @@ export interface FileRoutesById {
   '/_main': typeof MainRouteWithChildren
   '/_main/en/': typeof MainEnIndexRoute
   '/_main/ko/': typeof MainKoIndexRoute
-  '/_docs/en/docs/3_6_1': typeof DocsEnDocs361RouteWithChildren
-  '/_docs/ko/docs/3_6_1': typeof DocsKoDocs361RouteWithChildren
+  '/_docs/en/docs/3_7': typeof DocsEnDocs37RouteWithChildren
+  '/_docs/ko/docs/3_7': typeof DocsKoDocs37RouteWithChildren
   '/_docs/en/docs/': typeof DocsEnDocsIndexRoute
   '/_docs/ko/docs/': typeof DocsKoDocsIndexRoute
-  '/_docs/en/docs/3_6_1/deep-dive': typeof DocsEnDocs361DeepDiveRoute
-  '/_docs/en/docs/3_6_1/tutorial': typeof DocsEnDocs361TutorialRoute
-  '/_docs/ko/docs/3_6_1/deep-dive': typeof DocsKoDocs361DeepDiveRoute
-  '/_docs/ko/docs/3_6_1/tutorial': typeof DocsKoDocs361TutorialRoute
-  '/_docs/en/docs/3_6_1/': typeof DocsEnDocs361IndexRoute
-  '/_docs/ko/docs/3_6_1/': typeof DocsKoDocs361IndexRoute
+  '/_docs/en/docs/3_7/deep-dive': typeof DocsEnDocs37DeepDiveRoute
+  '/_docs/en/docs/3_7/tutorial': typeof DocsEnDocs37TutorialRoute
+  '/_docs/ko/docs/3_7/deep-dive': typeof DocsKoDocs37DeepDiveRoute
+  '/_docs/ko/docs/3_7/tutorial': typeof DocsKoDocs37TutorialRoute
+  '/_docs/en/docs/3_7/': typeof DocsEnDocs37IndexRoute
+  '/_docs/ko/docs/3_7/': typeof DocsKoDocs37IndexRoute
 }
 
 export interface FileRouteTypes {
@@ -319,16 +319,16 @@ export interface FileRouteTypes {
     | ''
     | '/en'
     | '/ko'
-    | '/en/docs/3_6_1'
-    | '/ko/docs/3_6_1'
+    | '/en/docs/3_7'
+    | '/ko/docs/3_7'
     | '/en/docs'
     | '/ko/docs'
-    | '/en/docs/3_6_1/deep-dive'
-    | '/en/docs/3_6_1/tutorial'
-    | '/ko/docs/3_6_1/deep-dive'
-    | '/ko/docs/3_6_1/tutorial'
-    | '/en/docs/3_6_1/'
-    | '/ko/docs/3_6_1/'
+    | '/en/docs/3_7/deep-dive'
+    | '/en/docs/3_7/tutorial'
+    | '/ko/docs/3_7/deep-dive'
+    | '/ko/docs/3_7/tutorial'
+    | '/en/docs/3_7/'
+    | '/ko/docs/3_7/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -337,36 +337,36 @@ export interface FileRouteTypes {
     | '/ko'
     | '/en/docs'
     | '/ko/docs'
-    | '/en/docs/3_6_1/deep-dive'
-    | '/en/docs/3_6_1/tutorial'
-    | '/ko/docs/3_6_1/deep-dive'
-    | '/ko/docs/3_6_1/tutorial'
-    | '/en/docs/3_6_1'
-    | '/ko/docs/3_6_1'
+    | '/en/docs/3_7/deep-dive'
+    | '/en/docs/3_7/tutorial'
+    | '/ko/docs/3_7/deep-dive'
+    | '/ko/docs/3_7/tutorial'
+    | '/en/docs/3_7'
+    | '/ko/docs/3_7'
   id:
     | '__root__'
     | '/'
     | '/_main'
     | '/_main/en/'
     | '/_main/ko/'
-    | '/_docs/en/docs/3_6_1'
-    | '/_docs/ko/docs/3_6_1'
+    | '/_docs/en/docs/3_7'
+    | '/_docs/ko/docs/3_7'
     | '/_docs/en/docs/'
     | '/_docs/ko/docs/'
-    | '/_docs/en/docs/3_6_1/deep-dive'
-    | '/_docs/en/docs/3_6_1/tutorial'
-    | '/_docs/ko/docs/3_6_1/deep-dive'
-    | '/_docs/ko/docs/3_6_1/tutorial'
-    | '/_docs/en/docs/3_6_1/'
-    | '/_docs/ko/docs/3_6_1/'
+    | '/_docs/en/docs/3_7/deep-dive'
+    | '/_docs/en/docs/3_7/tutorial'
+    | '/_docs/ko/docs/3_7/deep-dive'
+    | '/_docs/ko/docs/3_7/tutorial'
+    | '/_docs/en/docs/3_7/'
+    | '/_docs/ko/docs/3_7/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MainRoute: typeof MainRouteWithChildren
-  DocsEnDocs361Route: typeof DocsEnDocs361RouteWithChildren
-  DocsKoDocs361Route: typeof DocsKoDocs361RouteWithChildren
+  DocsEnDocs37Route: typeof DocsEnDocs37RouteWithChildren
+  DocsKoDocs37Route: typeof DocsKoDocs37RouteWithChildren
   DocsEnDocsIndexRoute: typeof DocsEnDocsIndexRoute
   DocsKoDocsIndexRoute: typeof DocsKoDocsIndexRoute
 }
@@ -374,8 +374,8 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MainRoute: MainRouteWithChildren,
-  DocsEnDocs361Route: DocsEnDocs361RouteWithChildren,
-  DocsKoDocs361Route: DocsKoDocs361RouteWithChildren,
+  DocsEnDocs37Route: DocsEnDocs37RouteWithChildren,
+  DocsKoDocs37Route: DocsKoDocs37RouteWithChildren,
   DocsEnDocsIndexRoute: DocsEnDocsIndexRoute,
   DocsKoDocsIndexRoute: DocsKoDocsIndexRoute,
 }
@@ -392,8 +392,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/_main",
-        "/_docs/en/docs/3_6_1",
-        "/_docs/ko/docs/3_6_1",
+        "/_docs/en/docs/3_7",
+        "/_docs/ko/docs/3_7",
         "/_docs/en/docs/",
         "/_docs/ko/docs/"
       ]
@@ -416,20 +416,20 @@ export const routeTree = rootRoute
       "filePath": "_main/ko/index.tsx",
       "parent": "/_main"
     },
-    "/_docs/en/docs/3_6_1": {
-      "filePath": "_docs/en.docs/3_6_1.tsx",
+    "/_docs/en/docs/3_7": {
+      "filePath": "_docs/en.docs/3_7.tsx",
       "children": [
-        "/_docs/en/docs/3_6_1/deep-dive",
-        "/_docs/en/docs/3_6_1/tutorial",
-        "/_docs/en/docs/3_6_1/"
+        "/_docs/en/docs/3_7/deep-dive",
+        "/_docs/en/docs/3_7/tutorial",
+        "/_docs/en/docs/3_7/"
       ]
     },
-    "/_docs/ko/docs/3_6_1": {
-      "filePath": "_docs/ko.docs/3_6_1.tsx",
+    "/_docs/ko/docs/3_7": {
+      "filePath": "_docs/ko.docs/3_7.tsx",
       "children": [
-        "/_docs/ko/docs/3_6_1/deep-dive",
-        "/_docs/ko/docs/3_6_1/tutorial",
-        "/_docs/ko/docs/3_6_1/"
+        "/_docs/ko/docs/3_7/deep-dive",
+        "/_docs/ko/docs/3_7/tutorial",
+        "/_docs/ko/docs/3_7/"
       ]
     },
     "/_docs/en/docs/": {
@@ -438,29 +438,29 @@ export const routeTree = rootRoute
     "/_docs/ko/docs/": {
       "filePath": "_docs/ko.docs/index.ts"
     },
-    "/_docs/en/docs/3_6_1/deep-dive": {
-      "filePath": "_docs/en.docs/3_6_1/deep-dive.tsx",
-      "parent": "/_docs/en/docs/3_6_1"
+    "/_docs/en/docs/3_7/deep-dive": {
+      "filePath": "_docs/en.docs/3_7/deep-dive.tsx",
+      "parent": "/_docs/en/docs/3_7"
     },
-    "/_docs/en/docs/3_6_1/tutorial": {
-      "filePath": "_docs/en.docs/3_6_1/tutorial.tsx",
-      "parent": "/_docs/en/docs/3_6_1"
+    "/_docs/en/docs/3_7/tutorial": {
+      "filePath": "_docs/en.docs/3_7/tutorial.tsx",
+      "parent": "/_docs/en/docs/3_7"
     },
-    "/_docs/ko/docs/3_6_1/deep-dive": {
-      "filePath": "_docs/ko.docs/3_6_1/deep-dive.tsx",
-      "parent": "/_docs/ko/docs/3_6_1"
+    "/_docs/ko/docs/3_7/deep-dive": {
+      "filePath": "_docs/ko.docs/3_7/deep-dive.tsx",
+      "parent": "/_docs/ko/docs/3_7"
     },
-    "/_docs/ko/docs/3_6_1/tutorial": {
-      "filePath": "_docs/ko.docs/3_6_1/tutorial.tsx",
-      "parent": "/_docs/ko/docs/3_6_1"
+    "/_docs/ko/docs/3_7/tutorial": {
+      "filePath": "_docs/ko.docs/3_7/tutorial.tsx",
+      "parent": "/_docs/ko/docs/3_7"
     },
-    "/_docs/en/docs/3_6_1/": {
-      "filePath": "_docs/en.docs/3_6_1/index.tsx",
-      "parent": "/_docs/en/docs/3_6_1"
+    "/_docs/en/docs/3_7/": {
+      "filePath": "_docs/en.docs/3_7/index.tsx",
+      "parent": "/_docs/en/docs/3_7"
     },
-    "/_docs/ko/docs/3_6_1/": {
-      "filePath": "_docs/ko.docs/3_6_1/index.tsx",
-      "parent": "/_docs/ko/docs/3_6_1"
+    "/_docs/ko/docs/3_7/": {
+      "filePath": "_docs/ko.docs/3_7/index.tsx",
+      "parent": "/_docs/ko/docs/3_7"
     }
   }
 }

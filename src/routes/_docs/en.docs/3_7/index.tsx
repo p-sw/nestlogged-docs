@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import Index, { tableOfContents } from "@/documentations/3.7.2/en/index";
+import Index, { tableOfContents } from "@/documentations/3.7/en/index";
 import { DocLayout } from "../../-docs-components/Layout";
 
-export const Route = createFileRoute("/_docs/en/docs/3_6_1/")({
+export const Route = createFileRoute("/_docs/en/docs/3_7/")({
   component: RouteComponent,
 });
 

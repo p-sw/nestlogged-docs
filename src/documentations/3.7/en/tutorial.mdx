@@ -8,14 +8,15 @@ NestLogged provides simple decorators for NestJS, helping you implement complex 
 
 NestLogged offers the following features:
 
-* Function call, return, and error logging (**This is the core and foundation of NestLogged!**)
-* Parameter logging when functions are called
-  * Support for hiding or selecting specific properties when parameters are objects or arrays
-* Return value logging when functions complete
-* Trace logs that follow the function call flow (We call this Scope)
-* Unique ID display for each Request
+- Function call, return, and error logging (**This is the core and foundation of NestLogged!**)
+- Parameter logging when functions are called
+  - Support for hiding or selecting specific properties when parameters are objects or arrays
+- Return value logging when functions complete
+- Trace logs that follow the function call flow (We call this Scope)
+- Unique ID display for each Request
 
 Here's an example of the log output:
+
 ```log title:"Example Log"
 LOG [AppMiddleware] ID=[nPcz74xbRvm2IB0rTR6B2g/0000000001] | AppMiddleware.AppMiddleware: HIT MIDDLEWARE AppMiddleware.AppMiddleware (/)
 LOG [AppMiddleware] ID=[nPcz74xbRvm2IB0rTR6B2g/0000000001] | AppMiddleware.AppMiddleware: Hello from Middleware!
@@ -34,6 +35,7 @@ The interesting part is that these logs can be created with just a few simple de
 Let's learn how to do this step by step.
 
 ---
+
 # Applying NestLogged Logger
 
 NestLogged provides a ConsoleLogger that extends NestJS's default ConsoleLogger.
@@ -48,9 +50,9 @@ For more details, see the [Meaning of ConsoleLogger](deep-dive#meaning-of-consol
 Here's how to apply NestLogged's ConsoleLogger:
 
 ```ts file:main.ts
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { ConsoleLogger } from 'nestlogged'; // Import NestLogged's ConsoleLogger
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { ConsoleLogger } from "nestlogged"; // Import NestLogged's ConsoleLogger
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -79,6 +81,7 @@ Therefore, to avoid errors, you **must** use the `nestlogged-fastify` package.
 The internal logic is different, but the types match perfectly.
 
 ---
+
 # Adding Logs to Methods
 
 The foundation of NestLogged is adding call/return/error logs to methods.
@@ -89,9 +92,9 @@ The basic decorators for this role are `@LoggedFunction()` and `@LoggedRoute()`.
 - `@LoggedRoute()` - Used for Controller methods. In addition to `@LoggedFunction()`, it also collects the path and method of the endpoint.
 
 ```ts file:app.controller.ts
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
-import { LoggedRoute } from 'nestlogged';
+import { Controller, Get } from "@nestjs/common";
+import { AppService } from "./app.service";
+import { LoggedRoute } from "nestlogged";
 
 @Controller()
 export class AppController {
@@ -106,14 +109,14 @@ export class AppController {
 ```
 
 ```ts file:app.service.ts
-import { Injectable } from '@nestjs/common';
-import { LoggedFunction } from 'nestlogged';
+import { Injectable } from "@nestjs/common";
+import { LoggedFunction } from "nestlogged";
 
 @Injectable()
 export class AppService {
   @LoggedFunction() // The call and return of this function will be logged.
   getHello(): string {
-    return 'Hello!';
+    return "Hello!";
   }
 }
 ```
@@ -140,17 +143,17 @@ Both decorators accept the same type of options, and the option's structure and 
 
 ```ts title:"Option Type Definition (src/logged/utils.ts)"
 export interface OverrideBuildOptions {
-  callLogLevel: LogLevel | 'skip';
-  returnLogLevel: LogLevel | 'skip';
-  errorLogLevel: LogLevel | 'skip';
+  callLogLevel: LogLevel | "skip";
+  returnLogLevel: LogLevel | "skip";
+  errorLogLevel: LogLevel | "skip";
 }
 ```
 
 ```ts title:"Option Default Values (src/logged/utils.ts)"
 export const defaultOverrideBuildOptions: OverrideBuildOptions = {
-  callLogLevel: 'log',
-  returnLogLevel: 'log',
-  errorLogLevel: 'error',
+  callLogLevel: "log",
+  returnLogLevel: "log",
+  errorLogLevel: "error",
 };
 ```
 
@@ -162,9 +165,9 @@ It can be cumbersome to add decorators to each method in a class, so NestLogged 
 - `@LoggedInjectable()` - Applies NestJS's `@Injectable()` decorator to the class and applies the `@LoggedFunction()` decorator to all methods in the class.
 
 ```ts file:app.controller.ts
-import { Get } from '@nestjs/common';
-import { AppService } from './app.service';
-import { LoggedController } from 'nestlogged';
+import { Get } from "@nestjs/common";
+import { AppService } from "./app.service";
+import { LoggedController } from "nestlogged";
 
 // Apply @LoggedRoute() to all methods in this controller.
 @LoggedController() // Also replaces NestJS's @Controller
@@ -179,13 +182,13 @@ export class AppController {
 ```
 
 ```ts file:app.service.ts hl:3
-import { LoggedInjectable } from 'nestlogged';
+import { LoggedInjectable } from "nestlogged";
 
 // Apply @LoggedFunction() to all methods in this service.
 @LoggedInjectable() // Also replaces NestJS's @Injectable()
 export class AppService {
   getHello(): string {
-    return 'Hello!';
+    return "Hello!";
   }
 }
 ```
@@ -193,6 +196,7 @@ export class AppService {
 Using class decorators that apply logging to all methods reduces unnecessary code repetition and eliminates the need to worry about the position of the `@LoggedRoute()` decorator.
 
 ---
+
 # Logging Call Parameters
 
 To include parameters in the log when a function is called, you need to use the `@Logged()` decorator.
@@ -203,7 +207,7 @@ You can apply `@Logged()` before the parameter you want to include in the log.
 @LoggedInjectable()
 export class AppService {
   /* The message parameter will be logged. */
-  getMessage(@Logged('message') message: string): string {
+  getMessage(@Logged("message") message: string): string {
     return message;
   }
 }
@@ -222,7 +226,7 @@ The first parameter of the decorator determines the name of the parameter to be 
 @LoggedInjectable()
 export class AppService {
   /* The parameter name is message, but we can record it as otherName. */
-  getMessage(@Logged('otherName') message: string): string {
+  getMessage(@Logged("otherName") message: string): string {
     return message;
   }
 }
@@ -234,7 +238,9 @@ LOG [AppService] HIT FUNCTION AppService.getMessage WITH otherName=Hello!
 LOG [AppService] RETURNED FUNCTION AppService.getMessage
 LOG [AppController] RETURNED ENDPOINT AppController.getHello (AppController::/[GET])
 ```
+
 ## Decorator Parameters
+
 ### name (required)
 
 In TypeScript, when applying a decorator to a parameter, TypeScript passes parameter information to the decorator.
@@ -253,17 +259,20 @@ type Path = string;
 type Paths = Path[];
 
 interface IncludeExcludePath {
-    includePath?: Paths;
-    excludePath?: Paths;
+  includePath?: Paths;
+  excludePath?: Paths;
 }
 
-export function Logged(name: string, options?: IncludeExcludePath): ParameterDecoratorType;
+export function Logged(
+  name: string,
+  options?: IncludeExcludePath
+): ParameterDecoratorType;
 ```
 
 ```ts file:app.controller.ts
-import { Get } from '@nestjs/common';
-import { AppService, UserData } from './app.service';
-import { LoggedController } from 'nestlogged';
+import { Get } from "@nestjs/common";
+import { AppService, UserData } from "./app.service";
+import { LoggedController } from "nestlogged";
 
 @LoggedController()
 export class AppController {
@@ -272,11 +281,11 @@ export class AppController {
   @Get()
   createNewUser(): UserData {
     return this.appService.createNewUser({
-      displayName: 'John Doe',
-      email: 'john.doe@example.com',
+      displayName: "John Doe",
+      email: "john.doe@example.com",
       auth: {
-        loginName: 'john.doe',
-        password: 'password', /* This must be hidden!!! */
+        loginName: "john.doe",
+        password: "password" /* This must be hidden!!! */,
       },
     });
   }
@@ -284,7 +293,7 @@ export class AppController {
 ```
 
 ```ts file:app.service.ts
-import { Logged, LoggedInjectable } from 'nestlogged';
+import { Logged, LoggedInjectable } from "nestlogged";
 
 export interface UserData {
   displayName: string;
@@ -298,8 +307,8 @@ export interface UserData {
 @LoggedInjectable()
 export class AppService {
   createNewUser(
-    @Logged('user', { excludePath: ['auth.password'] }) // This is how we can hide it!!
-    newUserData: UserData,
+    @Logged("user", { excludePath: ["auth.password"] }) // This is how we can hide it!!
+    newUserData: UserData
   ) {
     // create new user
     return newUserData;
@@ -322,14 +331,17 @@ When an `object` is given to the `name` parameter of the `@Logged()` decorator, 
 export type Path = string;
 export type Each = Record<string, Path>;
 
-export function Logged(name: string, options?: IncludeExcludePath): ParameterDecoratorType;
+export function Logged(
+  name: string,
+  options?: IncludeExcludePath
+): ParameterDecoratorType;
 export function Logged(name: Each): ParameterDecoratorType;
 ```
 
 When using Each, you can **split a single parameter into multiple parts** in the log.
 
 ```ts file:app.service.ts hl:16-20
-import { Logged, LoggedInjectable, Returns } from 'nestlogged';
+import { Logged, LoggedInjectable, Returns } from "nestlogged";
 
 export interface UserData {
   displayName: string;
@@ -345,12 +357,12 @@ export class AppService {
   @Returns()
   createNewUser(
     @Logged({
-      displayName: 'displayName', // displayName separately,
-      email: 'email', // email separately,
-      loginName: 'auth.loginName', // loginName separately.
+      displayName: "displayName", // displayName separately,
+      email: "email", // email separately,
+      loginName: "auth.loginName", // loginName separately.
       // Not as a single object.
     })
-    newUserData: UserData,
+    newUserData: UserData
   ) {
     // create new user
     return newUserData;
@@ -365,41 +377,29 @@ LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH {"displayName":
 LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
 ```
 
->[!info] In the example above, we only covered parameters for Services, but you can use them in the same way with any method where log decorators can be applied, such as Controllers.
+> [!info] In the example above, we only covered parameters for Services, but you can use them in the same way with any method where log decorators can be applied, such as Controllers.
 
 ---
+
 # Logging Return Values
+
+## @Returns
 
 You can include the return value of a method in the log by using the `@Returns()` decorator.
 
-The parameters of `@Returns()` are almost identical to those of `@Logged()`. Therefore, you can use `@Returns()` in a similar way to `@Logged()`.
-
-However, one difference is that unlike `@Logged()`, `@Returns()` doesn't require a `name`.
-
-* If used without any parameters, it outputs the entire return value.
+`@Returns()` allows you to include the entire return value in the log.
 
 ```ts file:app.service.ts
-import { Logged, LoggedInjectable, Returns } from 'nestlogged';
-
-export interface UserData {
-  displayName: string;
-  email: string;
-  auth: {
-    loginName: string;
-    password: string;
-  };
-}
-
 @LoggedInjectable()
 export class AppService {
-  @Returns() // We want to log the return value.
+  @Returns()
   createNewUser(
     @Logged({
-      displayName: 'displayName',
-      email: 'email',
-      loginName: 'auth.loginName',
+      displayName: "displayName",
+      email: "email",
+      loginName: "auth.loginName",
     })
-    newUserData: UserData,
+    newUserData: UserData
   ) {
     // create new user
     return newUserData;
@@ -414,89 +414,125 @@ LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH {"displayName":
 LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
 ```
 
-* You can also use the name and options parameters of `@Logged()`.
+## @IfReturns
+
+When a function's return type can be multiple types, you can use `@IfReturns()` to have different logs based on the return value type.
+
+The `@IfReturns()` decorator takes a type checking function as its first parameter.
+This function receives the return value directly and checks the value type to narrow the type range, returning a boolean.
+For example, it receives a function like `(r: UserData | OAuthUserData) => r is OAuthUserData`.
+The implementation of this function is up to the user.
+
+The second parameter receives a function that takes the return value and converts it to an Each object.
+This function must always return an object, and the object returned by this function is output to the actual log using Each syntax.
 
 ```ts file:app.service.ts
-import { Logged, LoggedInjectable, Returns } from 'nestlogged';
-
-export interface UserData {
+interface OAuthUserData {
   displayName: string;
   email: string;
-  auth: {
-    loginName: string;
-    password: string;
-  };
+  oauth: Partial<{
+    discord: string;
+    github: string;
+    google: string;
+  }>;
 }
 
 @LoggedInjectable()
 export class AppService {
-  @Returns('createdUser', { excludePath: ['auth.password'] })
+  @IfReturns(
+    (r /*: UserData | OAuthUserData */) => "oauth" in r, // When OAuthUserData is returned
+    (r) => ({
+      message: "OAuth user created",
+      discordId: r.oauth.discord,
+      githubId: r.oauth.github,
+      googleId: r.oauth.google,
+    })
+  )
+  @IfReturns(
+    (r) => "auth" in r, // When UserData is returned
+    (r) => ({
+      message: "User created",
+      email: r.email,
+      loginName: r.auth.loginName,
+    })
+  )
   createNewUser(
     @Logged({
-      displayName: 'displayName',
-      email: 'email',
-      loginName: 'auth.loginName',
+      displayName: "displayName",
+      email: "email",
+      loginName: "auth.loginName",
     })
-    newUserData: UserData,
-  ) {
+    newUserData: UserData
+  ): UserData | OAuthUserData {
     // create new user
     return newUserData;
   }
 }
 ```
 
-```log title:"Log Output"
-LOG [AppController] HIT ENDPOINT AppController.createNewUser (AppController::/[GET])
+```log title:"When UserData is returned"
 LOG [AppService] HIT FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
-LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH createdUser={"displayName":"John Doe","email":"john.doe@example.com","auth":{"loginName":"john.doe"}}
-LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
+LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH message=User created, email=john.doe@example.com, loginName=john.doe
 ```
 
-* Or, you can use Each.
-
-```ts file:app.service.ts
-import { Logged, LoggedInjectable, Returns } from 'nestlogged';
-
-export interface UserData {
-  displayName: string;
-  email: string;
-  auth: {
-    loginName: string;
-    password: string;
-  };
-}
-
-@LoggedInjectable()
-export class AppService {
-  @Returns({
-    displayName: 'displayName',
-    email: 'email',
-    loginName: 'auth.loginName'
-  })
-  createNewUser(
-    @Logged({
-      displayName: 'displayName',
-      email: 'email',
-      loginName: 'auth.loginName',
-    })
-    newUserData: UserData,
-  ) {
-    // create new user
-    return newUserData;
-  }
-}
-```
-
-```log title:"Log Output"
-LOG [AppController] HIT ENDPOINT AppController.createNewUser (AppController::/[GET])
+```log title:"When OAuthUserData is returned"
 LOG [AppService] HIT FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
-LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
-LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
+LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH message=OAuth user created, discordId=discord, googleId=google
 ```
 
->[!info] In the example above, we only covered parameters for Services, but you can use them in the same way with any method where log decorators can be applied, such as Controllers.
+> [!info] If there's no matching `@IfReturns()` for the return value, it will log the entire return value if `@Returns()` is present.
+> Therefore, it can be used as a fallback.
+
+> [!info] In the example above, we only covered parameters for Services, but you can use them in the same way with any method where log decorators can be applied, such as Controllers.
 
 ---
+
+# Error Logging
+
+You can use the `@IfThrows()` decorator to log errors.
+
+`@IfThrows()` logs various errors but does not prevent intended error propagation.
+
+`@IfThrows()` takes an error class as its first parameter.
+This error class is used internally to check the error type using instanceof and trigger logging.
+
+```ts file:app.service.ts
+@LoggedInjectable()
+export class AppService {
+  @IfThrows(ForbiddenException, (e /*: ForbiddenException */) => ({
+    message: e.message,
+    code: e.getStatus(),
+  }))
+  createNewUser(
+    @Logged({
+      displayName: "displayName",
+      email: "email",
+      loginName: "auth.loginName",
+    })
+    newUserData: UserData
+  ): UserData | OAuthUserData {
+    throw new ForbiddenException("User already exists");
+    // create new user
+    return newUserData;
+  }
+}
+```
+
+```log title:"Log Output"
+  LOG [AppController] HIT ENDPOINT AppController.createNewUser (AppController::/[GET])
+  LOG [AppService] HIT FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
+ERROR [AppService] ERROR WHILE FUNCTION AppService.createNewUser WITH message=User already exists, code=403
+ERROR [AppController] ERROR WHILE ENDPOINT AppController.createNewUser (AppController::/[GET]) WITH User already exists
+```
+
+The `@IfThrows` decorator can accept both string and object as return values.
+
+When a string is passed as a return value, it outputs as is, and when an object is passed, it outputs using Each syntax.
+
+Also, if an error is passed when there's no matching IfThrows, it outputs the error object's message as the return value by default.
+
+---
+
 # Logger Injection
 
 We've learned how to log the call and return of functions, as well as their inputs and outputs.
@@ -508,9 +544,9 @@ Now let's see how to leave logs directly within functions.
 You can receive a logger as a function parameter by using the `@InjectLogger` decorator.
 
 ```ts file:app.controller.ts
-import { Get } from '@nestjs/common';
-import { AppService, UserData } from './app.service';
-import { InjectLogger, LoggedController, ScopedLogger } from 'nestlogged';
+import { Get } from "@nestjs/common";
+import { AppService, UserData } from "./app.service";
+import { InjectLogger, LoggedController, ScopedLogger } from "nestlogged";
 
 @LoggedController()
 export class AppController {
@@ -522,14 +558,14 @@ export class AppController {
 
     return this.appService.createNewUser(
       {
-        displayName: 'John Doe',
-        email: 'john.doe@example.com',
+        displayName: "John Doe",
+        email: "john.doe@example.com",
         auth: {
-          loginName: 'john.doe',
-          password: 'password',
+          loginName: "john.doe",
+          password: "password",
         },
       },
-      logger,
+      logger
     );
   }
 }
@@ -542,7 +578,7 @@ import {
   LoggedInjectable,
   Returns,
   ScopedLogger,
-} from 'nestlogged';
+} from "nestlogged";
 
 export interface UserData {
   displayName: string;
@@ -556,18 +592,18 @@ export interface UserData {
 @LoggedInjectable()
 export class AppService {
   @Returns({
-    displayName: 'displayName',
-    email: 'email',
-    loginName: 'auth.loginName',
+    displayName: "displayName",
+    email: "email",
+    loginName: "auth.loginName",
   })
   createNewUser(
     @Logged({
-      displayName: 'displayName',
-      email: 'email',
-      loginName: 'auth.loginName',
+      displayName: "displayName",
+      email: "email",
+      loginName: "auth.loginName",
     })
     newUserData: UserData,
-    @InjectLogger logger: ScopedLogger,
+    @InjectLogger logger: ScopedLogger
   ) {
     // create new user
     logger.log(`User created: ${newUserData.displayName}`);
@@ -586,6 +622,7 @@ LOG [AppController] ID=[d5IfszIYQXOFPh910xyaTA/0000000002] | AppController.creat
 ```
 
 Logger injection additionally provides the following features:
+
 1. You can see that the logs include an **ID**. This ID is uniquely generated for each Request. It allows you to track individual Requests when logs from multiple simultaneous Requests are mixed. We call it **Request ID** or **Scope ID**.
 2. You can see the **function call flow** for a Request, similar to a traceback. If an error occurs in your service, you can immediately identify which function execution caused the error with just one Request ID. We call it **Scope**.
 
@@ -593,8 +630,8 @@ Logger injection additionally provides the following features:
 
 When you need to use the Request ID or Scope included in the logs, you can retrieve the values using ScopedLogger's methods.
 
-* `ScopedLogger.getScopeId(): string`
-* `ScopedLogger.getCurrentScope(): (string | string[])[]`
+- `ScopedLogger.getScopeId(): string`
+- `ScopedLogger.getCurrentScope(): (string | string[])[]`
 
 > [!warning] Using these functions in actual application logic (such as database IDs) is not recommended.  
 > This feature was created to expose request IDs to users to make debugging easier when errors occur.
@@ -604,7 +641,7 @@ When you need to use the Request ID or Scope included in the logs, you can retri
 When you add a `logger` parameter to a function using the `@InjectLogger` decorator, you'll get a type error if you call the function directly without providing a logger.
 
 ```ts title:"Example"
-this.appService.createNewUser(userData) // Type error because we didn't provide a logger!
+this.appService.createNewUser(userData); // Type error because we didn't provide a logger!
 ```
 
 However, a runtime error will **not occur**.
@@ -624,31 +661,32 @@ createNewUser(@InjectLogger _logger?: ScopedLogger) {
 ```
 
 ---
+
 # Other Special Log Decorators
 
 So far, we've only covered Controllers and Services.
 
 NestLogged also supports log decorators for Guards, Interceptors, ExceptionFilters, and Middlewares.
 
-* Guard = `LoggedGuard`
-* Interceptor = `LoggedInterceptor`
-* ExceptionFilter = `LoggedExceptionFilter`
-* Middleware = `LoggedMiddleware`
+- Guard = `LoggedGuard`
+- Interceptor = `LoggedInterceptor`
+- ExceptionFilter = `LoggedExceptionFilter`
+- Middleware = `LoggedMiddleware`
 
 ## LoggedGuard
 
 Here's how to apply `@LoggedGuard` to a Guard:
 
 ```ts file:app.guard.ts
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { LoggedGuard } from 'nestlogged';
-import { Observable } from 'rxjs';
+import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import { LoggedGuard } from "nestlogged";
+import { Observable } from "rxjs";
 
 @Injectable() // Don't use LoggedInjectable for Guards
 export class AppGuard implements CanActivate {
   @LoggedGuard() // Instead, use @LoggedGuard on the method
   canActivate(
-    context: ExecutionContext,
+    context: ExecutionContext
   ): boolean | Promise<boolean> | Observable<boolean> {
     return true;
   }
@@ -665,9 +703,9 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
-} from '@nestjs/common';
-import { LoggedInterceptor } from 'nestlogged';
-import { Observable } from 'rxjs';
+} from "@nestjs/common";
+import { LoggedInterceptor } from "nestlogged";
+import { Observable } from "rxjs";
 
 @Injectable() // Instead of @LoggedInjectable
 export class AppInterceptor implements NestInterceptor {
@@ -683,8 +721,8 @@ export class AppInterceptor implements NestInterceptor {
 Here's how to apply `@LoggedExceptionFilter` to an Exception Filter:
 
 ```ts file:app.filter.ts
-import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
-import { LoggedExceptionFilter } from 'nestlogged';
+import { ArgumentsHost, Catch, ExceptionFilter } from "@nestjs/common";
+import { LoggedExceptionFilter } from "nestlogged";
 
 @Catch()
 export class AppFilter<T> implements ExceptionFilter {
@@ -698,19 +736,22 @@ export class AppFilter<T> implements ExceptionFilter {
 Here's how to apply `@LoggedMiddleware` to a class Middleware:
 
 ```ts file:app.middleware.ts
-import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
-import { LoggedExceptionFilter } from 'nestlogged';
+import { Injectable, NestMiddleware } from "@nestjs/common";
+import { LoggedMiddleware } from "nestlogged";
+import { Request, Response, NextFunction } from "express";
 
-@Catch()
-export class AppFilter<T> implements ExceptionFilter {
-  @LoggedExceptionFilter() // Use @LoggedExceptionFilter on the method
-  catch(exception: T, host: ArgumentsHost) {}
+@Injectable() // Don't use LoggedInjectable for Middleware
+export class AppMiddleware implements NestMiddleware {
+  @LoggedMiddleware() // Instead, use @LoggedMiddleware on the method
+  use(req: Request, res: Response, next: NextFunction) {
+    next();
+  }
 }
 ```
 
->[!error]
+> [!error]
 > Middleware can be implemented in two forms: class middleware and function middleware.
-> 
+>
 > TypeScript does not support decorators for functions that are not class methods, so currently there is no way to apply `@LoggedMiddleware` to function implementations rather than class implementations.
 >
 > Support for function Middleware will be added in a future version soon.
@@ -728,7 +769,7 @@ export class AppGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
     @InjectLogger logger: ScopedLogger, // This will cause an error
-    @InjectLogger logger?: ScopedLogger, // This will not cause an error
+    @InjectLogger logger?: ScopedLogger // This will not cause an error
   ): boolean | Promise<boolean> | Observable<boolean> {
     return true;
   }
@@ -736,14 +777,15 @@ export class AppGuard implements CanActivate {
 ```
 
 ---
+
 # Additional: JSON Output
 
 You can provide options to the ConsoleLogger to output in JSON format as follows:
 
 ```ts file:main.ts
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { ConsoleLogger } from 'nestlogged';
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { ConsoleLogger } from "nestlogged";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

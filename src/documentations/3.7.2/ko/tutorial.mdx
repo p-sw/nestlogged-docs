@@ -126,9 +126,11 @@ LOG [AppController] RETURNED ENDPOINT AppController.getHello (AppController::/[G
 ```
 
 > [!warning] `@LoggedRoute()`를 사용할 때는 데코레이터의 순서에 주의해야 합니다.  
-> 항상 `@LoggedRoute()`가 `@Get()`, `@Post()` 등의 데코레이터보다 **먼저 오도록 배치**하세요.
+> 항상 `@LoggedRoute()`가 `@Get()`, `@Post()` 등의 데코레이터보다 **나중에 오도록 배치**하세요.
 >
+> 타입스크립트는 bottom-to-top 순서로 데코레이터를 실행합니다.
 > `@Get()`과 `@Post()`와 같은 HTTP 메서드 데코레이터는 적용되는 메서드에 path와 method를 메타데이터로 추가합니다. `@LoggedRoute()`는 이 메타데이터를 읽어오는 작업을 수행하는데, HTTP 메서드 데코레이터보다 먼저 수행될 경우 읽어올 메타데이터가 없어 undefined로 표시됩니다.
+> 즉, `@LoggedRoute()`는 `@Get()`과 같은 데코레이터보다 먼저 실행되어야 합니다.
 >
 > 순서가 헷갈린다면, 데코레이터가 `LoggedRoute(Get(getHello))`와 같이 작동한다는 것을 기억하세요.
 
@@ -328,40 +330,28 @@ export function Logged(name: Each): ParameterDecoratorType;
 
 Each를 사용할 경우, **하나의 파라미터를 여러개로 분할해** 로그에 표시할 수 있습니다.
 
-```ts file:app.service.ts hl:16-20
-import { Logged, LoggedInjectable, Returns } from 'nestlogged';
-
-export interface UserData {
-  displayName: string;
-  email: string;
-  auth: {
-    loginName: string;
-    password: string;
-  };
-}
-
+```ts file:app.service.ts
 @LoggedInjectable()
 export class AppService {
-  @Returns()
-  createNewUser(
-    @Logged({
-      displayName: 'displayName', // displayName 따로,
-      email: 'email', // email 따로,
-      loginName: 'auth.loginName', // loginName 따로 출력합니다.
+  createNewUser(
+    @Logged({
+      displayName: 'displayName', // displayName 따로,
+      email: 'email', // email 따로,
+      loginName: 'auth.loginName', // loginName 따로 출력합니다.
       // 하나의 object로 출력하지 않아요.
-    })
-    newUserData: UserData,
-  ) {
-    // create new user
-    return newUserData;
-  }
+    })
+    newUserData: UserData,
+  ) {
+    // create new user
+    return newUserData;
+  }
 }
 ```
 
 ```log title:"출력 로그"
 LOG [AppController] HIT ENDPOINT AppController.createNewUser (AppController::/[GET])
 LOG [AppService] HIT FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
-LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH {"displayName":"John Doe","email":"john.doe@example.com","auth":{"loginName":"john.doe","password":"password"}}
+LOG [AppService] RETURNED FUNCTION AppService.createNewUser
 LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
 ```
 
@@ -370,29 +360,16 @@ LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController
 ---
 # 종료 반환값 로그
 
-`@Returns()` 데코레이터를 사용하면 메서드의 반환값을 로그에 포함할 수 있습니다.
+## @Returns
 
-`@Returns()`의 파라미터는 `@Logged()`의 파라미터와 거의 일치합니다. 따라서 `@Logged()`와 비슷한 방식으로 `@Returns()`를 사용할 수 있습니다.
+`@IfReturns()`와 `@Returns()` 데코레이터를 사용하면 메서드의 반환값을 로그에 포함할 수 있습니다.
 
-다만 한 가지 다른 점은, `@Returns()`는 `@Logged()`와 다르게 `name`을 주지 않아도 무관합니다.
-
-* 아무런 파라미터 없이 사용할 경우 반환값을 전부 출력합니다.
+`@Returns()`를 사용하면 반환값을 전부 로그에 포함할 수 있습니다.
 
 ```ts file:app.service.ts
-import { Logged, LoggedInjectable, Returns } from 'nestlogged';
-
-export interface UserData {
-  displayName: string;
-  email: string;
-  auth: {
-    loginName: string;
-    password: string;
-  };
-}
-
 @LoggedInjectable()
 export class AppService {
-  @Returns() // 반환값을 로그하고자 합니다.
+  @Returns()
   createNewUser(
     @Logged({
       displayName: 'displayName',
@@ -408,29 +385,54 @@ export class AppService {
 ```
 
 ```log title:"출력 로그"
-LOG [AppController] HIT ENDPOINT AppController.createNewUser (AppController::/[GET])
+LOG [AppController] HIT ENDPOINT AppController.createNewUser (AppController::/[GET]) 
 LOG [AppService] HIT FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
 LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH {"displayName":"John Doe","email":"john.doe@example.com","auth":{"loginName":"john.doe","password":"password"}}
 LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
 ```
 
-* `@Logged()`의 파라미터인 name과 options를 사용할 수도 있습니다.
+## @IfReturns
+
+함수의 반환 타입이 여러개일 경우, `@IfReturns()`를 사용하면 반환값의 타입에 따라 다른 로그가 사용되도록 할 수도 있습니다.
+
+`@IfReturns()` 데코레이터는 첫 번째 파라미터로 일종의 타입 검사 함수를 받습니다.
+이 함수는 반환값을 그대로 받은 뒤, 값의 타입을 확인해 boolean으로 타입의 범위를 좁히는 함수입니다.
+예를 들어, `(r: UserData | OAuthUserData) => r is OAuthUserData`와 같은 함수를 받습니다.
+이 함수의 구현은 사용자에게 달려 있습니다.
+
+두 번째 파라미터로는 반환값을 받아 Each 객체로 변환하는 함수를 받습니다.
+이 함수는 항상 object를 반환해야 하며, 이 함수에서 반환된 object는 실제 로그에 Each 문법으로 출력됩니다.
 
 ```ts file:app.service.ts
-import { Logged, LoggedInjectable, Returns } from 'nestlogged';
-
-export interface UserData {
+interface OAuthUserData {
   displayName: string;
   email: string;
-  auth: {
-    loginName: string;
-    password: string;
-  };
+  oauth: Partial<{
+    discord: string;
+    github: string;
+    google: string;
+  }>;
 }
 
 @LoggedInjectable()
 export class AppService {
-  @Returns('createdUser', { excludePath: ['auth.password'] })
+  @IfReturns(
+    (r/*: UserData | OAuthUserData */) => 'oauth' in r, // OAuthUserData가 반환되었을 경우
+    (r) => ({
+      message: 'OAuth user created',
+      discordId: r.oauth.discord,
+      githubId: r.oauth.github,
+      googleId: r.oauth.google
+    })
+  )
+  @IfReturns(
+    (r) => 'auth' in r, // UserData가 반환되었을 경우
+    (r) => ({
+      message: 'User created',
+      email: r.email,
+      loginName: r.auth.loginName
+    })
+  )
   createNewUser(
     @Logged({
       displayName: 'displayName',
@@ -438,63 +440,69 @@ export class AppService {
       loginName: 'auth.loginName',
     })
     newUserData: UserData,
-  ) {
+  ): UserData | OAuthUserData {
     // create new user
     return newUserData;
   }
 }
 ```
 
-```log title:"출력 로그"
-LOG [AppController] HIT ENDPOINT AppController.createNewUser (AppController::/[GET])
+```log title:"UserData 반환 시"
 LOG [AppService] HIT FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
-LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH createdUser={"displayName":"John Doe","email":"john.doe@example.com","auth":{"loginName":"john.doe"}}
-LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
+LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH message=User created, email=john.doe@example.com, loginName=john.doe
 ```
 
-* 또는, Each를 사용할 수도 있습니다.
-
-```ts file:app.service.ts
-import { Logged, LoggedInjectable, Returns } from 'nestlogged';
-
-export interface UserData {
-  displayName: string;
-  email: string;
-  auth: {
-    loginName: string;
-    password: string;
-  };
-}
-
-@LoggedInjectable()
-export class AppService {
-  @Returns({
-    displayName: 'displayName',
-    email: 'email',
-    loginName: 'auth.loginName'
-  })
-  createNewUser(
-    @Logged({
-      displayName: 'displayName',
-      email: 'email',
-      loginName: 'auth.loginName',
-    })
-    newUserData: UserData,
-  ) {
-    // create new user
-    return newUserData;
-  }
-}
-```
-
-```log title:"출력 로그"
-LOG [AppController] HIT ENDPOINT AppController.createNewUser (AppController::/[GET])
+```log title:"OAuthUserData 반환 시"
 LOG [AppService] HIT FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
-LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
-LOG [AppController] RETURNED ENDPOINT AppController.createNewUser (AppController::/[GET])
+LOG [AppService] RETURNED FUNCTION AppService.createNewUser WITH message=OAuth user created, discordId=discord, googleId=google
 ```
 
 >[!info] 위 예제에서는 Service에 대한 파라미터만 다뤘지만, Controller와 같이 로그 데코레이터가 적용될 수 있는 모든 메서드에서 똑같이 사용할 수 있습니다.
+
+---
+# 오류 로그
+
+오류를 로그하는 데에는 `@IfThrows()` 데코레이터를 사용할 수 있습니다.
+
+`@IfThrows()`는 다양한 오류에 대해 로그를 수행하지만, 의도된 오류 전파를 막지 않습니다.
+
+`@IfThrows()`는 첫 파라미터로 오류 클래스를 그대로 받습니다.
+이 오류 클래스는 instanceof를 통해 내부적으로 오류의 종류를 확인하고, 로그를 발생시킵니다.
+
+```ts file:app.service.ts
+@LoggedInjectable()
+export class AppService {
+  @IfThrows(ForbiddenException, (e/*: ForbiddenException */) => ({
+    message: e.message,
+    code: e.getStatus(),
+  }))
+  createNewUser(
+    @Logged({
+      displayName: 'displayName',
+      email: 'email',
+      loginName: 'auth.loginName',
+    })
+    newUserData: UserData,
+  ): UserData | OAuthUserData {
+    throw new ForbiddenException('User already exists');
+    // create new user
+    return newUserData;
+  }
+}
+```
+
+```log title:"출력 로그"
+  LOG [AppController] HIT ENDPOINT AppController.createNewUser (AppController::/[GET]) 
+  LOG [AppService] HIT FUNCTION AppService.createNewUser WITH displayName=John Doe, email=john.doe@example.com, loginName=john.doe
+ERROR [AppService] ERROR WHILE FUNCTION AppService.createNewUser WITH message=User already exists, code=403
+ERROR [AppController] ERROR WHILE ENDPOINT AppController.createNewUser (AppController::/[GET]) WITH User already exists
+```
+
+`@IfThrows` 데코레이터는 반환값으로 string 또는 object 둘 다 받을 수 있습니다.
+
+반환값으로 string이 전달되었을 경우 그대로 출력하고, object가 전달되었을 경우 Each 문법으로 출력됩니다.
+
+또한, 맞는 IfThrows가 없는 상태에서 오류가 전달되었을 경우 기본적으로 오류 객체의 message를 반환값으로 생각해 출력합니다.
 
 ---
 # 로거 주입
